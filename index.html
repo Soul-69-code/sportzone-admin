@@ -1348,42 +1348,50 @@ async function updateDisc(id){
 function sendNotifyMe(id){toast('Notification feature coming soon','info');}
 
 async function addProduct(){
-  const name=document.getElementById('pName').value;
+  const name=document.getElementById('pName').value.trim();
   const price=+document.getElementById('pPrice').value;
   if(!name||!price){toast('Name and price required','error');return;}
-
-  const formData=new FormData();
-  formData.append('name',name);
-  formData.append('description',document.getElementById('pDesc').value||'');
-  formData.append('gender',document.getElementById('pGender').value||'Unisex');
-  formData.append('base_price',price);
-  formData.append('discount_percent',document.getElementById('pDisc').value||0);
-  formData.append('stock_quantity',document.getElementById('pStock').value||0);
-  formData.append('sizes',document.getElementById('pSizes').value||'S,M,L,XL');
-  formData.append('size_guide_url',document.getElementById('pSizeGuide').value||'');
-
-  // Add image files
-  const imgInput=document.getElementById('pImgFiles');
-  if(imgInput&&imgInput.files){
-    for(let i=0;i<Math.min(imgInput.files.length,4);i++){
-      formData.append('images',imgInput.files[i]);
-    }
-  }
 
   const btn=document.querySelector('#modal-product .f-submit');
   btn.textContent='Uploading...';btn.disabled=true;
 
-  const d=await api('/products','POST',formData,true);
-  btn.textContent='Add Product';btn.disabled=false;
+  try{
+    const formData=new FormData();
+    formData.append('name',name);
+    formData.append('description',document.getElementById('pDesc').value||'');
+    formData.append('gender',document.getElementById('pGender').value||'Unisex');
+    formData.append('base_price',price);
+    formData.append('discount_percent',document.getElementById('pDisc').value||0);
+    formData.append('stock_quantity',document.getElementById('pStock').value||0);
+    formData.append('sizes',document.getElementById('pSizes').value||'One Size');
+    formData.append('brand_name',document.getElementById('pBrand')?document.getElementById('pBrand').value||'':'');
+    formData.append('category_name',document.getElementById('pCat')?document.getElementById('pCat').value||'':'');
 
-  if(d.success){
-    closeModal('modal-product');
-    ['pName','pBrand','pCat','pPrice','pDisc','pStock','pSizes','pDesc','pSizeGuide'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
-    if(document.getElementById('pImgFiles'))document.getElementById('pImgFiles').value='';
-    addAudit(`Product "${name}" added to backend`);
-    rProducts();toast('Product added to store!');
-  } else {
-    toast(d.message||d.error||'Failed to add product','error');
+    const imgInput=document.getElementById('pImgFiles');
+    if(imgInput&&imgInput.files&&imgInput.files.length>0){
+      for(let i=0;i<Math.min(imgInput.files.length,4);i++){
+        formData.append('images',imgInput.files[i]);
+      }
+    }
+
+    const d=await api('/products','POST',formData,true);
+    console.log('addProduct response:',d);
+
+    if(d.success||d.product){
+      closeModal('modal-product');
+      ['pName','pBrand','pCat','pPrice','pDisc','pStock','pSizes','pDesc'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+      if(document.getElementById('pImgFiles'))document.getElementById('pImgFiles').value='';
+      if(document.getElementById('imgPreview'))document.getElementById('imgPreview').innerHTML='';
+      addAudit('Product "'+name+'" added');
+      rProducts();toast('Product added to store!');
+    } else {
+      toast(d.message||d.error||'Failed to add product','error');
+    }
+  }catch(e){
+    console.error('addProduct error:',e);
+    toast('Connection error: '+e.message,'error');
+  }finally{
+    btn.textContent='Add Product';btn.disabled=false;
   }
 }
 
