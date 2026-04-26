@@ -4,832 +4,2122 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Sanjay Collection · Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
+:root{
+  --bg:#07090f;--surface:#0c1018;--surface2:#111827;--surface3:#1a2235;
+  --border:#1e2d47;--border2:#243350;
+  --text:#e8edf5;--text2:#8b9ab5;--text3:#4a5a75;
+  --accent:#4f7cff;--accent2:#6b5aff;
+  --green:#00d68f;--red:#ff4d6a;--yellow:#ffb547;--purple:#9b6dff;--cyan:#00c2cc;
+  --owner:#ffb547;--admin:#4f7cff;--staff:#00d68f;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Outfit',sans-serif;background:#080c14;color:#e2e8f0;min-height:100vh;}
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:#0f1420;}
-::-webkit-scrollbar-thumb{background:#2a3550;border-radius:2px;}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+input,select,textarea,button{font-family:'Outfit',sans-serif;}
+select option{background:var(--surface2);}
 
-/* LOGIN */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse at 20% 50%,#0d1f3c 0%,#080c14 50%,#0a0f1e 100%);}
-.login-card{width:400px;background:#0f1420;border:1px solid #1e2d4a;border-radius:24px;
-  padding:40px;box-shadow:0 40px 80px rgba(0,0,0,0.5);}
-.login-logo-mark{width:56px;height:56px;background:linear-gradient(135deg,#3B82F6,#6366F1);
-  border-radius:16px;display:flex;align-items:center;justify-content:center;
-  font-size:26px;margin:0 auto 12px;}
-.login-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;text-align:center;}
-.login-sub{font-size:13px;color:#64748b;text-align:center;margin-bottom:28px;}
-.form-label{font-size:11px;font-weight:700;color:#475569;letter-spacing:0.5px;
-  text-transform:uppercase;display:block;margin-bottom:6px;}
-.form-input{width:100%;background:#141c2e;border:1px solid #1e2d4a;border-radius:12px;
-  padding:12px 16px;font-size:14px;color:#e2e8f0;font-family:'Outfit',sans-serif;
-  outline:none;transition:border 0.2s;margin-bottom:16px;}
-.form-input:focus{border-color:#3B82F6;}
-.login-btn{width:100%;background:linear-gradient(135deg,#3B82F6,#6366F1);
-  border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;
-  color:#fff;cursor:pointer;font-family:'Outfit',sans-serif;}
-.login-btn:hover{opacity:0.9;}
-.login-err{color:#F43F5E;font-size:12px;margin:-10px 0 12px;display:none;}
+.login-page{height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 80% 60% at 20% 40%,#0a1628 0%,var(--bg) 70%);}
+.login-card{width:420px;background:var(--surface);border:1px solid var(--border);
+  border-radius:28px;padding:44px;box-shadow:0 0 0 1px #ffffff04,0 40px 80px rgba(0,0,0,0.6);}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:32px;}
+.login-brand-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.login-brand-name{font-size:20px;font-weight:800;color:var(--text);}
+.login-brand-sub{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.step-row{display:flex;align-items:center;gap:8px;margin-bottom:24px;}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;transition:all 0.3s;}
+.step-dot.done{background:var(--green);color:#000;}
+.step-dot.active{background:var(--accent);color:#fff;box-shadow:0 0 0 4px #4f7cff20;}
+.step-dot.idle{background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
+.step-line{flex:1;height:1px;background:var(--border);}
+.step-line.done{background:var(--green);}
+.login-heading{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.login-sub{font-size:13px;color:var(--text3);margin-bottom:24px;}
+.f-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;}
+.f-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:14px;color:var(--text);outline:none;transition:border 0.2s,box-shadow 0.2s;margin-bottom:16px;}
+.f-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #4f7cff15;}
+.f-input::placeholder{color:var(--text3);}
+.f-input.err{border-color:var(--red);}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity 0.2s;}
+.login-btn:hover{opacity:0.92;}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.login-err{color:var(--red);font-size:12px;font-weight:600;padding:8px 12px;background:#ff4d6a10;border-radius:8px;border:1px solid #ff4d6a20;margin-bottom:14px;display:none;}
+.lockout-msg{color:var(--yellow);font-size:12px;font-weight:600;padding:10px 14px;background:#ffb54710;border-radius:8px;border:1px solid #ffb54720;margin-bottom:16px;display:none;}
+.login-hint{margin-top:18px;text-align:center;font-size:11px;color:var(--text3);}
 
-/* LAYOUT */
-.layout{display:flex;min-height:100vh;}
+.app{display:flex;height:100vh;overflow:hidden;}
 .hidden{display:none!important;}
 
-/* SIDEBAR */
-.sidebar{width:220px;background:#0a0f1e;border-right:1px solid #1e2d4a;
-  display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.sb-logo{padding:24px 20px 20px;border-bottom:1px solid #1e2d4a;}
-.sb-logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#3B82F6,#6366F1);
-  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;}
-.sb-brand{font-size:14px;font-weight:800;color:#fff;}
-.sb-role{font-size:10px;color:#3B82F6;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
-.sb-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px;}
-.sb-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
-  font-size:13px;font-weight:600;color:#64748b;cursor:pointer;transition:all 0.15s;border:1px solid transparent;}
-.sb-item:hover{background:#141c2e;color:#94a3b8;}
-.sb-item.act{background:linear-gradient(135deg,#1e3a5f,#1e2d4a);color:#3B82F6;border-color:#1e3a5f;}
-.sb-badge{margin-left:auto;background:#F43F5E;color:#fff;font-size:9px;font-weight:800;
-  padding:2px 6px;border-radius:10px;}
-.sb-footer{padding:16px 12px;border-top:1px solid #1e2d4a;}
-.sb-logout{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
-  font-size:13px;font-weight:600;color:#64748b;cursor:pointer;transition:all 0.15s;}
-.sb-logout:hover{background:#1a0f14;color:#F43F5E;}
+.sb{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sb-head{padding:20px;border-bottom:1px solid var(--border);}
+.sb-brand{display:flex;align-items:center;gap:12px;}
+.sb-brand-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;}
+.sb-brand-name{font-size:14px;font-weight:800;color:var(--text);}
+.sb-brand-role{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.sb-nav{flex:1;padding:10px 12px 4px;}
+.sb-section-label{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:10px 8px 6px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.15s;border:1px solid transparent;margin-bottom:1px;}
+.sb-item:hover{background:var(--surface2);color:var(--text);}
+.sb-item.act{background:linear-gradient(135deg,#1a2a4a,#1e2d4a);color:var(--accent);border-color:#1e3560;}
+.sb-item.locked{opacity:0.25;cursor:not-allowed;pointer-events:none;}
+.sb-item svg{flex-shrink:0;opacity:0.7;}
+.sb-item.act svg,.sb-item:hover svg{opacity:1;}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
+.sb-footer{padding:12px;border-top:1px solid var(--border);margin-top:auto;}
+.sb-user{padding:10px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);margin-bottom:8px;}
+.sb-logout{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.15s;}
+.sb-logout:hover{background:#1a0f14;color:var(--red);}
 
-/* MAIN */
-.main{flex:1;overflow-y:auto;}
-.topbar{padding:18px 28px;border-bottom:1px solid #1e2d4a;background:#0a0f1e;
-  display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;}
-.page-title{font-size:20px;font-weight:800;color:#fff;}
-.page-sub{font-size:12px;color:#475569;margin-top:2px;}
-.tb-right{display:flex;align-items:center;gap:12px;}
-.tb-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:#475569;
-  background:#141c2e;padding:6px 12px;border-radius:8px;border:1px solid #1e2d4a;}
-.tb-user{display:flex;align-items:center;gap:8px;background:#141c2e;
-  padding:6px 12px;border-radius:10px;border:1px solid #1e2d4a;}
-.tb-avatar{width:28px;height:28px;background:linear-gradient(135deg,#3B82F6,#6366F1);
-  border-radius:8px;display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:800;color:#fff;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.tb-left .page-title{font-size:18px;font-weight:800;color:var(--text);}
+.tb-left .page-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-chip{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:7px 12px;}
+.tb-clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
+.tb-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.page-body{flex:1;overflow-y:auto;padding:22px 24px;}
 
-.content{padding:24px 28px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;}
+.card-p{padding:20px;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.stat-card:hover{border-color:var(--border2);}
+.stat-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.stat-change{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.sec-title{font-size:15px;font-weight:800;color:var(--text);}
+.sec-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
-.stat-card{background:#0f1420;border:1px solid #1e2d4a;border-radius:16px;padding:20px;position:relative;overflow:hidden;}
-.stat-label{font-size:11px;font-weight:600;color:#475569;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
-.stat-value{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#fff;margin-bottom:4px;}
-.stat-change{font-size:11px;font-weight:600;}
-.stat-icon{position:absolute;top:18px;right:18px;font-size:22px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all 0.15s;letter-spacing:0.3px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.btn-primary:hover{opacity:0.9;}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface3);color:var(--text);}
+.btn-success{background:#0a2a1a;color:var(--green);border:1px solid #0d3d24;}
+.btn-success:hover{background:var(--green);color:#000;}
+.btn-danger{background:#1f0a10;color:var(--red);border:1px solid #3a0d18;}
+.btn-danger:hover{background:var(--red);color:#fff;}
+.btn-warn{background:#1f1505;color:var(--yellow);border:1px solid #3a2508;}
+.btn-warn:hover{background:var(--yellow);color:#000;}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:8px;}
+.btn-icon{width:30px;height:30px;padding:0;border-radius:8px;justify-content:center;background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-icon:hover{background:var(--surface3);color:var(--text);}
+.btn-icon.red:hover{background:#1f0a10;color:var(--red);border-color:#3a0d18;}
 
-/* SECTION */
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.section-title{font-size:15px;font-weight:800;color:#fff;}
-.section-sub{font-size:12px;color:#475569;margin-top:2px;}
-.add-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#3B82F6,#6366F1);
-  color:#fff;border:none;padding:9px 16px;border-radius:10px;font-size:12px;
-  font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;}
+.filter-row{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.filter-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.filter-pill:hover{border-color:var(--border2);color:var(--text2);}
+.filter-pill.act{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-/* TABLE */
-.table-wrap{background:#0f1420;border:1px solid #1e2d4a;border-radius:16px;overflow:auto;margin-bottom:24px;}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:auto;margin-bottom:20px;}
 table{width:100%;border-collapse:collapse;min-width:600px;}
-thead{background:#141c2e;border-bottom:1px solid #1e2d4a;}
-th{padding:12px 16px;font-size:11px;font-weight:700;color:#475569;text-align:left;
-  letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
-td{padding:13px 16px;font-size:13px;color:#94a3b8;border-bottom:1px solid #0f1420;}
+thead{background:var(--surface2);}
+th{padding:11px 16px;font-size:10px;font-weight:700;color:var(--text3);text-align:left;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--border);}
+td{padding:12px 16px;font-size:13px;color:var(--text2);border-bottom:1px solid #0d1220;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:#0d1220;}
-.td-name{color:#e2e8f0;font-weight:600;}
-.td-mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:#64748b;}
+tr:hover td{background:#0d1520;}
+.td-main{color:var(--text);font-weight:600;}
+.td-mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);}
+.td-actions{display:flex;gap:5px;align-items:center;}
 
-/* BADGES */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.badge-pending{background:#2a1f0a;color:#F59E0B;border:1px solid #3a2a0a;}
-.badge-paid{background:#0a1f2a;color:#3B82F6;border:1px solid #0a2a3a;}
-.badge-processing{background:#1a1030;color:#8B5CF6;border:1px solid #2a1a40;}
-.badge-shipped{background:#0a1a2a;color:#6366F1;border:1px solid #1a1a3a;}
-.badge-delivered{background:#0a2a1a;color:#10B981;border:1px solid #0a3a1a;}
-.badge-cancelled{background:#2a0a0a;color:#F43F5E;border:1px solid #3a0a0a;}
-.badge-approved{background:#0a2a1a;color:#10B981;border:1px solid #0a3a1a;}
-.badge-rejected{background:#2a0a0a;color:#F43F5E;border:1px solid #3a0a0a;}
-.badge-active{background:#0a2a1a;color:#10B981;border:1px solid #0a3a1a;}
-.badge-out_of_stock{background:#2a0a0a;color:#F43F5E;border:1px solid #3a0a0a;}
-.badge-low_stock{background:#2a1f0a;color:#F59E0B;border:1px solid #3a2a0a;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.5px;white-space:nowrap;}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.badge-pending{background:#1f1505;color:var(--yellow);border:1px solid #3a2508;}
+.badge-paid{background:#0a1628;color:var(--accent);border:1px solid #0d2040;}
+.badge-shipped{background:#0a1020;color:#60a5fa;border:1px solid #0d1830;}
+.badge-delivered{background:#0a1f14;color:var(--green);border:1px solid #0d3020;}
+.badge-cancelled{background:#1f0a10;color:var(--red);border:1px solid #3a0d18;}
+.badge-approved{background:#0a1f14;color:var(--green);border:1px solid #0d3020;}
+.badge-rejected{background:#1f0a10;color:var(--red);border:1px solid #3a0d18;}
+.badge-refunded{background:#150d2a;color:var(--purple);border:1px solid #2a1a4a;}
+.badge-active{background:#0a1f14;color:var(--green);border:1px solid #0d3020;}
+.badge-out_of_stock{background:#1f0a10;color:var(--red);border:1px solid #3a0d18;}
+.badge-low_stock{background:#1f1505;color:var(--yellow);border:1px solid #3a2508;}
+.badge-inactive{background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
+.badge-owner{background:#1f1505;color:var(--owner);border:1px solid #3a2508;}
+.badge-admin{background:#0a1628;color:var(--admin);border:1px solid #0d2040;}
+.badge-staff{background:#0a1f14;color:var(--staff);border:1px solid #0d3020;}
+.badge-success{background:#0a1f14;color:var(--green);border:1px solid #0d3020;}
+.badge-failed{background:#1f0a10;color:var(--red);border:1px solid #3a0d18;}
+.badge-issued{background:#150d2a;color:var(--purple);border:1px solid #2a1a4a;}
 
-/* ACTION BUTTONS */
-.actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-.btn-accept{display:inline-flex;align-items:center;gap:4px;background:#0a2a1a;color:#10B981;
-  border:1px solid #0a3a1a;padding:5px 10px;border-radius:8px;font-size:11px;
-  font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.15s;}
-.btn-accept:hover{background:#10B981;color:#fff;}
-.btn-decline{display:inline-flex;align-items:center;gap:4px;background:#2a0a0a;color:#F43F5E;
-  border:1px solid #3a0a0a;padding:5px 10px;border-radius:8px;font-size:11px;
-  font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.15s;}
-.btn-decline:hover{background:#F43F5E;color:#fff;}
-.btn-ship{display:inline-flex;align-items:center;gap:4px;background:#0a1a2a;color:#6366F1;
-  border:1px solid #1a1a3a;padding:5px 10px;border-radius:8px;font-size:11px;
-  font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.15s;}
-.btn-ship:hover{background:#6366F1;color:#fff;}
-.btn-icon{background:#141c2e;color:#64748b;border:1px solid #1e2d4a;
-  width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all 0.15s;font-size:14px;}
-.btn-icon:hover{background:#1e2d4a;color:#e2e8f0;}
-.btn-danger:hover{background:#2a0a0a!important;color:#F43F5E!important;border-color:#3a0a0a!important;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(6px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:28px;width:520px;max-height:88vh;overflow-y:auto;box-shadow:0 40px 80px rgba(0,0,0,0.6);}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.modal-title{font-size:16px;font-weight:800;color:var(--text);}
+.modal-close{background:var(--surface2);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:all 0.15s;}
+.modal-close:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.f-row{margin-bottom:14px;}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.f-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--text);outline:none;cursor:pointer;transition:border 0.2s;}
+.f-select:focus{border-color:var(--accent);}
+.f-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--text);outline:none;resize:vertical;transition:border 0.2s;}
+.f-textarea:focus{border-color:var(--accent);}
+.f-textarea::placeholder{color:var(--text3);}
+.f-submit{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;transition:opacity 0.2s;}
+.f-submit:hover{opacity:0.9;}
 
-/* FILTER PILLS */
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-.filter-pill{padding:6px 14px;border-radius:20px;border:1px solid #1e2d4a;background:#141c2e;
-  color:#64748b;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:'Outfit',sans-serif;}
-.filter-pill.act{background:#3B82F6;color:#fff;border-color:#3B82F6;}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.chart-sub{font-size:11px;color:var(--text3);margin-bottom:14px;}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);
-  display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px);}
-.modal-overlay.show{display:flex;}
-.modal{background:#0f1420;border:1px solid #1e2d4a;border-radius:20px;padding:28px;
-  width:500px;max-height:85vh;overflow-y:auto;position:relative;}
-.modal-title{font-size:17px;font-weight:800;color:#fff;margin-bottom:20px;
-  display:flex;justify-content:space-between;align-items:center;}
-.modal-close{cursor:pointer;color:#475569;font-size:22px;line-height:1;background:none;border:none;
-  font-family:'Outfit',sans-serif;}
-.form-row{margin-bottom:14px;}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.form-select{width:100%;background:#141c2e;border:1px solid #1e2d4a;border-radius:10px;
-  padding:10px 14px;font-size:13px;color:#e2e8f0;font-family:'Outfit',sans-serif;
-  outline:none;cursor:pointer;}
-.form-submit{width:100%;background:linear-gradient(135deg,#3B82F6,#6366F1);
-  border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;
-  color:#fff;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:8px;}
-.form-submit:hover{opacity:0.9;}
+.toggle{width:40px;height:22px;border-radius:11px;cursor:pointer;display:flex;align-items:center;padding:3px;border:none;transition:background 0.25s;}
+.toggle-dot{width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
 
-/* COUPONS */
-.coupon-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
-.coupon-card{background:#0f1420;border:1px solid #1e2d4a;border-radius:14px;padding:20px;position:relative;}
-.coupon-code{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;}
-.coupon-val{font-size:26px;font-weight:800;color:#3B82F6;margin-bottom:8px;}
-.coupon-meta{font-size:11px;color:#475569;margin-bottom:10px;}
-.coupon-progress{background:#141c2e;border-radius:4px;height:4px;overflow:hidden;}
-.coupon-bar{height:4px;background:linear-gradient(90deg,#3B82F6,#6366F1);border-radius:4px;transition:width 0.3s;}
-.toggle-wrap{position:absolute;top:16px;right:16px;display:flex;align-items:center;gap:6px;}
-.toggle{width:38px;height:22px;border-radius:11px;cursor:pointer;
-  display:flex;align-items:center;padding:3px;transition:background 0.2s;border:none;}
-.toggle-dot{width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.2s;}
+.coupon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.coupon-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;}
+.coupon-card::before{content:'';position:absolute;right:-30px;top:50%;transform:translateY(-50%);width:60px;height:60px;background:var(--bg);border-radius:50%;}
+.coupon-card::after{content:'';position:absolute;left:-30px;top:50%;transform:translateY(-50%);width:60px;height:60px;background:var(--bg);border-radius:50%;}
+.coupon-dashes{position:absolute;top:50%;left:10px;right:10px;height:1px;border-top:1px dashed var(--border2);}
+.coupon-inner{position:relative;z-index:1;}
+.coupon-code{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.coupon-val{font-size:24px;font-weight:900;color:var(--accent);margin-bottom:6px;}
+.coupon-meta{font-size:11px;color:var(--text3);margin-bottom:10px;}
+.coupon-bar-wrap{background:var(--surface2);border-radius:4px;height:3px;overflow:hidden;}
+.coupon-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:#0f1420;border:1px solid #1e2d4a;
-  color:#e2e8f0;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;
-  z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:none;
-  animation:slideUp 0.3s ease;}
-.toast.show{display:block;}
-@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.banner-preview{border-radius:14px;padding:20px;position:relative;overflow:hidden;margin-bottom:12px;min-height:120px;}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.metric-row:last-child{border-bottom:none;}
+.metric-bar-wrap{flex:1;margin:0 16px;background:var(--surface2);border-radius:4px;height:4px;}
+.metric-bar{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
 
-/* PROOF BOX */
-.proof-box{background:#141c2e;border:1px solid #1e2d4a;border-radius:10px;
-  padding:12px 16px;font-size:13px;color:#94a3b8;margin-bottom:12px;}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.detail-box{background:#141c2e;border-radius:10px;padding:10px 14px;}
-.detail-key{font-size:10px;color:#475569;font-weight:700;text-transform:uppercase;margin-bottom:4px;}
-.detail-val{font-size:13px;font-weight:600;color:#e2e8f0;}
+.audit-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.audit-item:last-child{border-bottom:none;}
 
-/* RESPONSIVE */
-@media(max-width:768px){
-  .sidebar{width:60px;}
-  .sb-brand,.sb-role,.sb-item span:not(.sb-badge){display:none;}
-  .sb-item{justify-content:center;padding:12px;}
-  .stats-grid{grid-template-columns:1fr 1fr;}
-  .coupon-grid{grid-template-columns:1fr;}
-  .content{padding:16px;}
-  .topbar{padding:14px 16px;}
-  .form-grid{grid-template-columns:1fr;}
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;}
+.role-perms{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.perm-chip{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;}
+.perm-yes{background:#0a1f14;color:var(--green);border:1px solid #0d3020;}
+.perm-no{background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
+
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{font-size:14px;font-weight:600;color:var(--text);}
+.setting-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+
+.notif-template{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all 0.15s;margin-bottom:8px;}
+.notif-template:hover{border-color:var(--accent);}
+
+.flash-active{background:linear-gradient(135deg,#1a0820,#0d1628);border:1px solid #3a1a50;border-radius:16px;padding:20px;margin-bottom:16px;}
+.flash-countdown{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--purple);letter-spacing:2px;}
+
+.user-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+
+.cms-item{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;}
+.cms-item-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px;}
+.cms-item-desc{font-size:11px;color:var(--text3);margin-bottom:8px;}
+
+.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px;}
+.warn-box{background:#1f1505;border:1px solid #3a2508;border-radius:12px;padding:12px 16px;font-size:12px;font-weight:600;color:var(--yellow);margin-bottom:16px;}
+.danger-box{background:#1f0a10;border:1px solid #3a0d18;border-radius:12px;padding:12px 16px;font-size:12px;font-weight:600;color:var(--red);margin-bottom:16px;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,0.5);display:none;animation:toastIn 0.3s ease;}
+.toast.show{display:flex;align-items:center;gap:8px;}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* PRODUCT IMAGES */
+.img-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.img-thumb{width:60px;height:60px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);position:relative;overflow:hidden;}
+.img-thumb img{width:100%;height:100%;object-fit:cover;}
+.img-remove{position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:#fff;}
+.img-add{width:60px;height:60px;border-radius:8px;border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);transition:all 0.15s;}
+.img-add:hover{border-color:var(--accent);color:var(--accent);}
+
+/* NOTIFY ME LIST */
+.notify-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.notify-item:last-child{border-bottom:none;}
+
+@media(max-width:900px){
+  .sb{width:60px;}
+  .sb-brand-name,.sb-brand-role,.sb-item span:not(.sb-badge),.sb-section-label,.sb-logout span,.sb-user{display:none;}
+  .sb-item{justify-content:center;padding:10px;}
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .coupon-grid,.two-col,.three-col{grid-template-columns:1fr;}
+  .page-body{padding:16px;}
   .modal{width:95vw;}
+  .f-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div class="login-wrap" id="loginPage">
+<div class="login-page" id="loginPage">
   <div class="login-card">
-    <div style="text-align:center;margin-bottom:28px;">
-      <div class="login-logo-mark">⚡</div>
-      <div class="login-title">Sanjay Collection</div>
-      <div class="login-sub">Admin Dashboard · Restricted Access</div>
+    <div class="login-brand">
+      <div class="login-brand-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div><div class="login-brand-name">Sanjay Collection</div><div class="login-brand-sub">Control Panel</div></div>
     </div>
-    <label class="form-label">Admin Key</label>
-    <input class="form-input" type="password" id="adminKeyInput" placeholder="Enter your admin key..." onkeydown="if(event.key==='Enter')doLogin()"/>
-    <div class="login-err" id="loginErr">⚠️ Invalid admin key. Try again.</div>
-    <button class="login-btn" onclick="doLogin()">Access Dashboard →</button>
-    <div style="margin-top:16px;text-align:center;font-size:11px;color:#334155;">
-      🔒 Check your .env for ADMIN_SECRET
+    <div class="step-row">
+      <div class="step-dot active" id="step1dot">1</div>
+      <div class="step-line" id="stepline"></div>
+      <div class="step-dot idle" id="step2dot">2</div>
     </div>
+    <div class="lockout-msg" id="lockoutMsg"></div>
+    <div id="step1">
+      <div class="login-heading">Primary Access Key</div>
+      <div class="login-sub">Enter your first authentication key</div>
+      <label class="f-label">Key 1</label>
+      <input class="f-input" type="password" id="key1Input" placeholder="SC_••••••••••••" onkeydown="if(event.key==='Enter')submitKey1()"/>
+      <div class="login-err" id="err1"></div>
+      <button class="login-btn" id="btn1" onclick="submitKey1()">Continue</button>
+    </div>
+    <div id="step2" class="hidden">
+      <div class="login-heading">Secondary Access Key</div>
+      <div class="login-sub">Confirm your identity</div>
+      <label class="f-label">Key 2</label>
+      <input class="f-input" type="password" id="key2Input" placeholder="SC_••••••••••••" onkeydown="if(event.key==='Enter')submitKey2()"/>
+      <div class="login-err" id="err2"></div>
+      <button class="login-btn" id="btn2" onclick="submitKey2()">Access Dashboard</button>
+      <div style="margin-top:12px;text-align:center"><span style="font-size:12px;color:var(--text3);cursor:pointer" onclick="resetLogin()">← Back</span></div>
+    </div>
+    <div class="login-hint">Restricted access · Sanjay Collection Internal</div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div class="layout hidden" id="dashPage">
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-mark">⚡</div>
-      <div class="sb-brand">Sanjay Collection</div>
-      <div class="sb-role">Admin Panel</div>
+<!-- APP -->
+<div class="app hidden" id="appPage">
+  <div class="sb">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <div class="sb-brand-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div><div class="sb-brand-name">Sanjay Collection</div><div class="sb-brand-role" id="sbRole">—</div></div>
+      </div>
     </div>
-    <div class="sb-nav">
-      <div class="sb-item act" onclick="showPage('dashboard',this)">📊 <span>Dashboard</span></div>
-      <div class="sb-item" onclick="showPage('orders',this)">📦 <span>Orders</span> <span class="sb-badge" id="pendingBadge">0</span></div>
-      <div class="sb-item" onclick="showPage('returns',this)">🔄 <span>Returns</span> <span class="sb-badge" id="returnBadge">0</span></div>
-      <div class="sb-item" onclick="showPage('products',this)">🏷️ <span>Products</span></div>
-      <div class="sb-item" onclick="showPage('coupons',this)">🎟️ <span>Coupons</span></div>
-      <div class="sb-item" onclick="showPage('notifications',this)">🔔 <span>Notifications</span></div>
-    </div>
+    <div class="sb-nav" id="sbNav"></div>
     <div class="sb-footer">
-      <div class="sb-logout" onclick="doLogout()">🚪 <span>Logout</span></div>
+      <div class="sb-user" id="sbUser"></div>
+      <div class="sb-logout" onclick="logout()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Sign Out</span>
+      </div>
     </div>
   </div>
-
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <div>
+      <div class="tb-left">
         <div class="page-title" id="pageTitle">Dashboard</div>
-        <div class="page-sub">Sanjay Collection · Admin</div>
+        <div class="page-sub" id="pageSub">Sanjay Collection</div>
       </div>
       <div class="tb-right">
-        <div class="tb-time" id="clockEl">--:--</div>
-        <div class="tb-user">
-          <div class="tb-avatar">SC</div>
-          <span style="font-size:12px;font-weight:700;color:#94a3b8;">Admin</span>
-        </div>
+        <div class="tb-chip"><div class="tb-dot"></div><span style="font-size:12px;font-weight:600;color:var(--text2)">Live</span><span class="tb-clock" id="clock">--:--</span></div>
+        <div class="tb-chip" id="roleChip"></div>
       </div>
     </div>
-
-    <!-- PAGES -->
-    <div id="page-dashboard" class="content">
-      <div class="stats-grid" id="statsGrid"></div>
-      <div class="section-header">
-        <div><div class="section-title">Recent Orders</div><div class="section-sub">Latest activity</div></div>
-      </div>
-      <div class="table-wrap"><table><thead><tr>
-        <th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th>
-      </tr></thead><tbody id="dashOrdersBody"></tbody></table></div>
-    </div>
-
-    <div id="page-orders" class="content hidden">
-      <div class="section-header">
-        <div><div class="section-title">Orders</div><div class="section-sub" id="orderCount"></div></div>
-      </div>
-      <div class="filter-row" id="orderFilters"></div>
-      <div class="table-wrap"><table><thead><tr>
-        <th>Order</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th>
-      </tr></thead><tbody id="ordersBody"></tbody></table></div>
-    </div>
-
-    <div id="page-returns" class="content hidden">
-      <div class="section-header">
-        <div><div class="section-title">Returns & Refunds</div><div class="section-sub" id="returnCount"></div></div>
-      </div>
-      <div class="table-wrap"><table><thead><tr>
-        <th>Return ID</th><th>Order</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th>
-      </tr></thead><tbody id="returnsBody"></tbody></table></div>
-    </div>
-
-    <div id="page-products" class="content hidden">
-      <div class="section-header">
-        <div><div class="section-title">Products</div><div class="section-sub" id="productCount"></div></div>
-        <button class="add-btn" onclick="openModal('addProductModal')">+ Add Product</button>
-      </div>
-      <div class="table-wrap"><table><thead><tr>
-        <th>Name</th><th>Brand</th><th>Category</th><th>Price</th><th>Discount</th><th>Stock</th><th>Status</th><th>Actions</th>
-      </tr></thead><tbody id="productsBody"></tbody></table></div>
-    </div>
-
-    <div id="page-coupons" class="content hidden">
-      <div class="section-header">
-        <div><div class="section-title">Coupons & Offers</div><div class="section-sub" id="couponCount"></div></div>
-        <button class="add-btn" onclick="openModal('addCouponModal')">+ New Coupon</button>
-      </div>
-      <div class="coupon-grid" id="couponGrid"></div>
-    </div>
-
-    <div id="page-notifications" class="content hidden">
-      <div class="section-header">
-        <div><div class="section-title">Send Notification</div><div class="section-sub">Push to all users or specific segments</div></div>
-      </div>
-      <div style="max-width:540px;">
-        <div style="background:#0f1420;border:1px solid #1e2d4a;border-radius:16px;padding:24px;margin-bottom:16px;">
-          <div class="form-row">
-            <label class="form-label">Notification Type</label>
-            <select class="form-select" id="notifType" onchange="prefillNotif()">
-              <option value="">Select type...</option>
-              <option value="deal">⚡ Deal / Discount</option>
-              <option value="new">🔥 New Collection Drop</option>
-              <option value="stock">📦 Back in Stock</option>
-              <option value="order">🚚 Order Update</option>
-              <option value="custom">✏️ Custom</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <label class="form-label">Title</label>
-            <input class="form-input" id="notifTitle" placeholder="Notification title..."/>
-          </div>
-          <div class="form-row">
-            <label class="form-label">Message</label>
-            <textarea class="form-input" id="notifBody" rows="3" placeholder="Notification body..." style="resize:vertical;"></textarea>
-          </div>
-          <div class="form-row">
-            <label class="form-label">Send To</label>
-            <select class="form-select" id="notifTarget">
-              <option value="all">All Users</option>
-              <option value="cart">Users with items in cart</option>
-              <option value="buyers">Previous buyers only</option>
-            </select>
-          </div>
-          <button class="form-submit" onclick="sendNotif()" style="margin-top:12px;">🚀 Send Notification</button>
-        </div>
-        <div style="background:#0f1420;border:1px solid #1e2d4a;border-radius:16px;padding:20px;">
-          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px;">Quick Templates</div>
-          <div style="display:flex;flex-direction:column;gap:8px;" id="notifTemplates"></div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- end main -->
-</div><!-- end layout -->
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- RETURN DETAIL MODAL -->
-<div class="modal-overlay" id="returnModal">
-  <div class="modal">
-    <div class="modal-title">Return Details <button class="modal-close" onclick="closeModal('returnModal')">×</button></div>
-    <div class="detail-grid" id="returnDetailGrid"></div>
-    <div class="form-label" style="margin-bottom:6px;">Reason</div>
-    <div class="proof-box" id="returnReason"></div>
-    <div class="form-label" style="margin-bottom:6px;">Customer Proof Submitted</div>
-    <div class="proof-box" id="returnProof"></div>
-    <div id="returnActions" style="display:flex;gap:10px;margin-top:12px;"></div>
+    <div class="page-body" id="pageBody"></div>
   </div>
 </div>
 
-<!-- ADD PRODUCT MODAL -->
-<div class="modal-overlay" id="addProductModal">
-  <div class="modal">
-    <div class="modal-title">Add New Product <button class="modal-close" onclick="closeModal('addProductModal')">×</button></div>
-    <div class="form-row"><label class="form-label">Product Name</label>
-      <input class="form-input" id="pName" placeholder="e.g. Nike DryFit Running Tee"/></div>
-    <div class="form-grid">
-      <div class="form-row"><label class="form-label">Brand</label>
-        <input class="form-input" id="pBrand" placeholder="Nike"/></div>
-      <div class="form-row"><label class="form-label">Category</label>
-        <input class="form-input" id="pCategory" placeholder="Men Topwear"/></div>
-    </div>
-    <div class="form-grid">
-      <div class="form-row"><label class="form-label">Base Price (₹)</label>
-        <input class="form-input" id="pPrice" type="number" placeholder="999"/></div>
-      <div class="form-row"><label class="form-label">Discount %</label>
-        <input class="form-input" id="pDiscount" type="number" placeholder="0"/></div>
-    </div>
-    <div class="form-row"><label class="form-label">Stock Quantity</label>
-      <input class="form-input" id="pStock" type="number" placeholder="50"/></div>
-    <div class="form-row"><label class="form-label">Description</label>
-      <textarea class="form-input" id="pDesc" rows="2" placeholder="Short description..." style="resize:vertical;"></textarea></div>
-    <button class="form-submit" onclick="addProduct()">Add Product →</button>
-  </div>
-</div>
+<!-- SHARED MODAL -->
+<div class="modal-overlay" id="sharedModal"><div class="modal" id="sharedModalInner"></div></div>
 
-<!-- ADD COUPON MODAL -->
-<div class="modal-overlay" id="addCouponModal">
-  <div class="modal">
-    <div class="modal-title">Create Coupon <button class="modal-close" onclick="closeModal('addCouponModal')">×</button></div>
-    <div class="form-row"><label class="form-label">Coupon Code</label>
-      <input class="form-input" id="cCode" placeholder="SUMMER50" style="text-transform:uppercase;"/></div>
-    <div class="form-grid">
-      <div class="form-row"><label class="form-label">Type</label>
-        <select class="form-select" id="cType">
-          <option value="flat">Flat (₹)</option>
-          <option value="percent">Percent (%)</option>
-        </select></div>
-      <div class="form-row"><label class="form-label">Value</label>
-        <input class="form-input" id="cValue" type="number" placeholder="100"/></div>
-    </div>
-    <div class="form-grid">
-      <div class="form-row"><label class="form-label">Min Order (₹)</label>
-        <input class="form-input" id="cMin" type="number" placeholder="499"/></div>
-      <div class="form-row"><label class="form-label">Max Uses</label>
-        <input class="form-input" id="cMax" type="number" placeholder="100"/></div>
-    </div>
-    <button class="form-submit" onclick="addCoupon()">Create Coupon →</button>
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modal-product"><div class="modal" style="width:600px">
+  <div class="modal-head"><span class="modal-title" id="productModalTitle">Add New Product</span><div class="modal-close" onclick="closeModal('modal-product')">×</div></div>
+  <div class="f-row"><label class="f-label">Product Name</label><input class="f-input" id="pName" placeholder="Nike DryFit Running Tee"/></div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Brand</label><input class="f-input" id="pBrand" placeholder="Nike"/></div>
+    <div class="f-row"><label class="f-label">Category</label><input class="f-input" id="pCat" placeholder="Men Topwear"/></div>
   </div>
-</div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Base Price (₹)</label><input class="f-input" id="pPrice" type="number" placeholder="999"/></div>
+    <div class="f-row"><label class="f-label">Discount %</label><input class="f-input" id="pDisc" type="number" placeholder="0"/></div>
+  </div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Stock</label><input class="f-input" id="pStock" type="number" placeholder="50"/></div>
+    <div class="f-row"><label class="f-label">Gender</label>
+      <select class="f-select" id="pGender"><option>Men</option><option>Women</option><option>Kids</option><option>Unisex</option></select>
+    </div>
+  </div>
+  <div class="f-row"><label class="f-label">Sizes Available (comma separated)</label><input class="f-input" id="pSizes" placeholder="S, M, L, XL, XXL"/></div>
+  <div class="f-row"><label class="f-label">Description</label><textarea class="f-textarea" id="pDesc" rows="2" placeholder="Short description..."></textarea></div>
+  <div class="f-row"><label class="f-label">Size Guide Image URL</label><input class="f-input" id="pSizeGuide" placeholder="https://... (optional)"/></div>
+  <div class="f-row">
+    <label class="f-label">Product Images (up to 4 photos)</label>
+    <div style="background:var(--surface2);border:2px dashed var(--border2);border-radius:12px;padding:20px;text-align:center;cursor:pointer;margin-bottom:8px" onclick="document.getElementById('pImgFiles').click()">
+      <div style="font-size:28px;margin-bottom:6px">📷</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text2)">Tap to select product photos</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px">JPG, PNG, WebP · Max 5MB each · Up to 4 images</div>
+    </div>
+    <input type="file" id="pImgFiles" accept="image/*" multiple style="display:none" onchange="previewImages(this)"/>
+    <div id="imgPreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+  </div>
+  <button class="f-submit" onclick="addProduct()">Add Product</button>
+</div></div>
+
+<!-- COUPON MODAL -->
+<div class="modal-overlay" id="modal-coupon"><div class="modal">
+  <div class="modal-head"><span class="modal-title">Create Coupon</span><div class="modal-close" onclick="closeModal('modal-coupon')">×</div></div>
+  <div class="f-row"><label class="f-label">Coupon Code</label><input class="f-input" id="cCode" placeholder="SUMMER50" style="text-transform:uppercase"/></div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Type</label><select class="f-select" id="cType"><option value="flat">Flat (₹)</option><option value="percent">Percent (%)</option></select></div>
+    <div class="f-row"><label class="f-label">Value</label><input class="f-input" id="cVal" type="number" placeholder="100"/></div>
+  </div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Min Order (₹)</label><input class="f-input" id="cMin" type="number" placeholder="499"/></div>
+    <div class="f-row"><label class="f-label">Max Uses</label><input class="f-input" id="cMax" type="number" placeholder="100"/></div>
+  </div>
+  <div class="f-row"><label class="f-label">Expires</label><input class="f-input" id="cExp" type="date"/></div>
+  <button class="f-submit" onclick="addCoupon()">Create Coupon</button>
+</div></div>
+
+<!-- BANNER MODAL -->
+<div class="modal-overlay" id="modal-banner"><div class="modal">
+  <div class="modal-head"><span class="modal-title" id="bannerModalTitle">Banner</span><div class="modal-close" onclick="closeModal('modal-banner')">×</div></div>
+  <div class="f-row"><label class="f-label">Tag Line</label><input class="f-input" id="bTag" placeholder="NEW COLLECTION 2026"/></div>
+  <div class="f-row"><label class="f-label">Main Title</label><input class="f-input" id="bTitle" placeholder="Game Ready Apparel"/></div>
+  <div class="f-row"><label class="f-label">Subtitle</label><input class="f-input" id="bSub" placeholder="Football Apparel Collection"/></div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Price Text</label><input class="f-input" id="bPrice" placeholder="₹299 Onwards"/></div>
+    <div class="f-row"><label class="f-label">Button Text</label><input class="f-input" id="bCta" placeholder="Shop Now"/></div>
+  </div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Schedule Start</label><input class="f-input" id="bStart" type="datetime-local"/></div>
+    <div class="f-row"><label class="f-label">Schedule End</label><input class="f-input" id="bEnd" type="datetime-local"/></div>
+  </div>
+  <div class="f-row"><label class="f-label">Background Color</label><input class="f-input" id="bColor" type="color" value="#0d1628"/></div>
+  <button class="f-submit" onclick="saveBanner()">Save Banner</button>
+</div></div>
 
 <!-- SHIP MODAL -->
-<div class="modal-overlay" id="shipModal">
-  <div class="modal">
-    <div class="modal-title">Mark as Shipped <button class="modal-close" onclick="closeModal('shipModal')">×</button></div>
-    <div class="form-row"><label class="form-label">Shiprocket Order ID (optional)</label>
-      <input class="form-input" id="shipRocketId" placeholder="SR-123456"/></div>
-    <div class="form-row"><label class="form-label">Tracking URL (optional)</label>
-      <input class="form-input" id="trackUrl" placeholder="https://shiprocket.co/tracking/..."/></div>
-    <button class="form-submit" onclick="confirmShip()">✅ Confirm Shipped</button>
+<div class="modal-overlay" id="modal-ship"><div class="modal">
+  <div class="modal-head"><span class="modal-title">Mark as Shipped</span><div class="modal-close" onclick="closeModal('modal-ship')">×</div></div>
+  <div class="f-row"><label class="f-label">Courier Name</label><input class="f-input" id="courierName" placeholder="Delhivery / Bluedart"/></div>
+  <div class="f-row"><label class="f-label">Shiprocket Order ID</label><input class="f-input" id="srId" placeholder="SR-123456 (optional)"/></div>
+  <div class="f-row"><label class="f-label">Tracking URL</label><input class="f-input" id="trackUrl" placeholder="https://... (optional)"/></div>
+  <button class="f-submit" onclick="confirmShip()">Confirm Shipped</button>
+</div></div>
+
+<!-- FLASH SALE MODAL -->
+<div class="modal-overlay" id="modal-flash"><div class="modal">
+  <div class="modal-head"><span class="modal-title">Create Flash Sale</span><div class="modal-close" onclick="closeModal('modal-flash')">×</div></div>
+  <div class="f-row"><label class="f-label">Sale Name</label><input class="f-input" id="fsName" placeholder="Weekend Flash Sale"/></div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Start</label><input class="f-input" id="fsStart" type="datetime-local"/></div>
+    <div class="f-row"><label class="f-label">End</label><input class="f-input" id="fsEnd" type="datetime-local"/></div>
   </div>
-</div>
+  <div class="f-grid">
+    <div class="f-row"><label class="f-label">Discount %</label><input class="f-input" id="fsDisc" type="number" placeholder="40"/></div>
+    <div class="f-row"><label class="f-label">Category</label><input class="f-input" id="fsCat" placeholder="All"/></div>
+  </div>
+  <button class="f-submit" onclick="createFlashSale()">Launch Flash Sale</button>
+</div></div>
+
+<!-- ADD ROLE MODAL -->
+<div class="modal-overlay" id="modal-role"><div class="modal">
+  <div class="modal-head"><span class="modal-title">Add New Member</span><div class="modal-close" onclick="closeModal('modal-role')">×</div></div>
+  <div class="f-row"><label class="f-label">Member Name</label><input class="f-input" id="rmName" placeholder="e.g. Rahul (Store Manager)"/></div>
+  <div class="f-row"><label class="f-label">Role</label><select class="f-select" id="rmRole"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
+  <div class="f-row"><label class="f-label">Key 1</label><input class="f-input" id="rmKey1" placeholder="SC_Staff2_2026"/></div>
+  <div class="f-row"><label class="f-label">Key 2</label><input class="f-input" id="rmKey2" placeholder="SC_Staff2Key_••••"/></div>
+  <div class="info-box">After creating — add these keys to Railway → Variables as STAFF2_KEY_1 and STAFF2_KEY_2</div>
+  <button class="f-submit" onclick="addRoleMember()">Add Member</button>
+</div></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-dot" id="toastDot"></div><span id="toastMsg"></span></div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────
-const API = 'https://sportzone-backend-production.up.railway.app';
-const ADMIN_KEY = 'sportzone_admin_2026'; // change this to match your .env
+// ── API ───────────────────────────────────────────────────────────────────
+const API_BASE='https://sportzone-backend-production.up.railway.app/api';
+const ADMIN_KEY='sportzone_admin_2026';
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-let orders = [
-  {id:'#ORD001',customer:'Rahul Sharma',phone:'9876543210',items:'Nike Tee × 2',total:1598,status:'pending',date:'21 Apr',address:'Mumbai, 400001'},
-  {id:'#ORD002',customer:'Priya Singh',phone:'9123456780',items:'Yoga Mat × 1',total:699,status:'paid',date:'21 Apr',address:'Delhi, 110001'},
-  {id:'#ORD003',customer:'Arjun Mehta',phone:'9988776655',items:'Cricket Bat × 1',total:2199,status:'shipped',date:'20 Apr',address:'Pune, 411001'},
-  {id:'#ORD004',customer:'Sneha Patel',phone:'9871234560',items:'Sports Bra × 2',total:1198,status:'delivered',date:'19 Apr',address:'Ahmedabad'},
-  {id:'#ORD005',customer:'Karan Joshi',phone:'9765432109',items:'Football Boots × 1',total:1899,status:'pending',date:'21 Apr',address:'Bangalore'},
-  {id:'#ORD006',customer:'Ananya Roy',phone:'9654321098',items:'Kids Helmet × 1',total:1299,status:'cancelled',date:'20 Apr',address:'Kolkata'},
-];
+async function api(path,method='GET',body=null,isForm=false){
+  const headers={'x-admin-key':ADMIN_KEY};
+  if(!isForm&&body)headers['Content-Type']='application/json';
+  try{
+    const res=await fetch(`${API_BASE}${path}`,{
+      method,headers,
+      body:isForm?body:(body?JSON.stringify(body):null)
+    });
+    return await res.json();
+  }catch(e){console.error('API:',e);return{success:false,error:e.message};}
+}
 
-let returns = [
-  {id:'#RET001',order:'#ORD010',customer:'Vikram Das',item:'Adidas Track Pants',reason:'Wrong size received',amount:899,status:'pending',proof:'📷 2 photos submitted',date:'20 Apr'},
-  {id:'#RET002',order:'#ORD008',customer:'Meera Nair',item:'Nike Running Shoes',reason:'Defective product — sole detached',amount:2499,status:'pending',proof:'📷 3 photos + 1 video submitted',date:'19 Apr'},
-  {id:'#RET003',order:'#ORD005',customer:'Rohit Kumar',item:'SS Cricket Bat',reason:'Not as described on website',amount:2199,status:'approved',proof:'📷 1 photo submitted',date:'18 Apr'},
-];
+// ── KEYS (SHA-256 hashed) ─────────────────────────────────────────────────
+const ROLES={
+  owner:{h1:'3ac7e3a4b8ca94b6656fb96631212ef90fba5778fb2cd662ffd08740c974e920',h2:'d225871f6019cc4c3fb946c1790da7a15a5722b87d2b237e60187d59c18692b5',label:'Owner',color:'#ffb547'},
+  admin:{h1:'b8d251b9e67613b9fb4906b402755beede75df750ddc862953a52761e66b138f',h2:'39e843c23b1d1aa3ae25271cb716204dc6ea3d30ab305045c3bfa9885783f0b9',label:'Admin',color:'#4f7cff'},
+  staff:{h1:'6d417f518bd7226410193196d6a7f2606be777ad23ecba134c7c15af341dbff0',h2:'21d143ad1f3ff9c4683a8a47c30b9dc9a4644c329e3a466bc8f8c19014a036b2',label:'Staff',color:'#00d68f'},
+};
 
-let products = [
-  {id:1,name:'DryFit Running Tee',brand:'Nike',category:'Men Topwear',price:799,discount:20,stock:45,status:'active'},
-  {id:2,name:'English Willow Bat',brand:'SS',category:'Sports Gear',price:2199,discount:15,stock:12,status:'active'},
-  {id:3,name:'Anti-Slip Yoga Mat',brand:'Strauss',category:'Fitness',price:699,discount:30,stock:0,status:'out_of_stock'},
-  {id:4,name:'Predator Football Boots',brand:'Adidas',category:'Men Footwear',price:1899,discount:10,stock:8,status:'active'},
-  {id:5,name:'Medium Support Sports Bra',brand:'Nivia',category:'Women Topwear',price:599,discount:25,stock:23,status:'active'},
-  {id:6,name:'Kids Cycling Helmet',brand:'btwin',category:'Kids Sports',price:1299,discount:0,stock:3,status:'low_stock'},
-];
+async function sha256(msg){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 
-let coupons = [
-  {id:1,code:'NC100',type:'flat',value:100,min:1499,used:34,max:100,active:true},
-  {id:2,code:'NC200',type:'flat',value:200,min:2499,used:18,max:50,active:true},
-  {id:3,code:'FLAT300',type:'flat',value:300,min:3499,used:5,max:30,active:true},
-  {id:4,code:'SUMMER20',type:'percent',value:20,min:999,used:67,max:200,active:false},
-];
+const PERMS={
+  owner:['dashboard','analytics','finance','reports','orders','returns','products','coupons','banners','flashsale','homepage','cms','categories','brands','customers','notifications','roles','auditlog','settings'],
+  admin:['dashboard','analytics','reports','orders','returns','products','coupons','banners','flashsale','categories','brands','customers','notifications'],
+  staff:['dashboard','analytics','orders','returns','products','coupons'],
+};
 
-let currentShipOrderId = null;
-let currentReturnId = null;
-let currentOrderFilter = 'all';
+// ── SECURITY ──────────────────────────────────────
+let loginAttempts=0,lockoutUntil=null,sessionTimer=null,step1Role=null;
+const SESSION_MS=30*60*1000;
 
-// ── AUTH ──────────────────────────────────────────────────────────────────
-function doLogin() {
-  const k = document.getElementById('adminKeyInput').value;
-  if (k === ADMIN_KEY) {
-    document.getElementById('loginPage').classList.add('hidden');
-    document.getElementById('dashPage').classList.remove('hidden');
-    initDashboard();
-    startClock();
+function isLockedOut(){
+  if(!lockoutUntil)return false;
+  if(Date.now()<lockoutUntil)return true;
+  lockoutUntil=null;loginAttempts=0;return false;
+}
+
+async function submitKey1(){
+  if(isLockedOut()){showLockout();return;}
+  const k=document.getElementById('key1Input').value.trim();
+  const h=await sha256(k);
+  const match=Object.entries(ROLES).find(([,v])=>v.h1===h);
+  if(match){
+    step1Role=match[0];
+    document.getElementById('err1').style.display='none';
+    document.getElementById('key1Input').classList.remove('err');
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('step1dot').className='step-dot done';
+    document.getElementById('step1dot').innerHTML='✓';
+    document.getElementById('stepline').classList.add('done');
+    document.getElementById('step2dot').className='step-dot active';
+    document.getElementById('key2Input').focus();
   } else {
-    document.getElementById('loginErr').style.display = 'block';
+    loginAttempts++;
+    document.getElementById('key1Input').classList.add('err');
+    if(loginAttempts>=5){lockoutUntil=Date.now()+30*60*1000;showLockout();addAudit('Failed login — locked out','—','#ff4d6a');}
+    else{showErr('err1',`Incorrect key. ${5-loginAttempts} attempts remaining.`);addAudit('Failed login attempt','—','#ff4d6a');}
   }
 }
 
-function doLogout() {
-  document.getElementById('dashPage').classList.add('hidden');
+async function submitKey2(){
+  if(isLockedOut()){showLockout();return;}
+  const k=document.getElementById('key2Input').value.trim();
+  const h=await sha256(k);
+  if(h===ROLES[step1Role].h2){
+    loginAttempts=0;
+    session.role=step1Role;
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('appPage').classList.remove('hidden');
+    initApp();addAudit(`${step1Role} logged in`,step1Role,ROLES[step1Role].color);
+    startSession();startClock();
+  } else {
+    loginAttempts++;
+    document.getElementById('key2Input').classList.add('err');
+    if(loginAttempts>=5){lockoutUntil=Date.now()+30*60*1000;showLockout();}
+    else showErr('err2',`Incorrect key 2. ${5-loginAttempts} attempts remaining.`);
+  }
+}
+
+function showErr(id,msg){const e=document.getElementById(id);e.style.display='block';e.textContent=msg;}
+function showLockout(){
+  const rem=Math.ceil((lockoutUntil-Date.now())/60000);
+  const el=document.getElementById('lockoutMsg');
+  el.style.display='block';el.textContent=`Locked out. Try again in ${rem} minute${rem>1?'s':''}.`;
+  ['btn1','btn2'].forEach(b=>{const el=document.getElementById(b);if(el)el.disabled=true;});
+}
+function resetLogin(){
+  document.getElementById('step1').classList.remove('hidden');
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step1dot').className='step-dot active';
+  document.getElementById('step1dot').innerHTML='1';
+  document.getElementById('stepline').classList.remove('done');
+  document.getElementById('step2dot').className='step-dot idle';
+  ['key1Input','key2Input'].forEach(i=>{const e=document.getElementById(i);if(e){e.value='';e.classList.remove('err');}});
+  ['err1','err2'].forEach(i=>{const e=document.getElementById(i);if(e)e.style.display='none';});
+  step1Role=null;
+}
+function logout(){
+  addAudit(`${session.role} signed out`,session.role,ROLES[session.role]?.color||'#888');
+  clearTimeout(sessionTimer);
+  document.getElementById('appPage').classList.add('hidden');
   document.getElementById('loginPage').classList.remove('hidden');
-  document.getElementById('adminKeyInput').value = '';
+  session={role:null};resetLogin();
+}
+function startSession(){
+  clearTimeout(sessionTimer);
+  sessionTimer=setTimeout(()=>{toast('Session expired','warn');setTimeout(logout,2000);},SESSION_MS);
+  document.addEventListener('click',()=>startSession(),{once:true});
+}
+function startClock(){
+  setInterval(()=>{const n=new Date();document.getElementById('clock').textContent=n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
 }
 
-// ── CLOCK ─────────────────────────────────────────────────────────────────
-function startClock() {
-  function tick() {
-    const now = new Date();
-    document.getElementById('clockEl').textContent =
-      now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) + ' · ' +
-      now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+// ── STATE ─────────────────────────────────────────
+let session={role:null};
+let currentPage='dashboard',orderFilter='all',flashTimer=null,editBannerId=null,shipOrderId=null;
+
+let S={
+  orders:[
+    {id:'#ORD001',customer:'Rahul Sharma',phone:'98765 43210',items:'Nike Tee × 2',total:1598,status:'pending',date:'24 Apr',address:'Mumbai, 400001'},
+    {id:'#ORD002',customer:'Priya Singh',phone:'91234 56780',items:'Yoga Mat × 1',total:699,status:'paid',date:'24 Apr',address:'Delhi, 110001'},
+    {id:'#ORD003',customer:'Arjun Mehta',phone:'99887 76655',items:'Cricket Bat × 1',total:2199,status:'shipped',date:'23 Apr',address:'Pune, 411001'},
+    {id:'#ORD004',customer:'Sneha Patel',phone:'98712 34560',items:'Sports Bra × 2',total:1198,status:'delivered',date:'22 Apr',address:'Ahmedabad'},
+    {id:'#ORD005',customer:'Karan Joshi',phone:'97654 32109',items:'Football Boots × 1',total:1899,status:'pending',date:'24 Apr',address:'Bangalore'},
+    {id:'#ORD006',customer:'Ananya Roy',phone:'96543 21098',items:'Kids Helmet × 1',total:1299,status:'cancelled',date:'23 Apr',address:'Kolkata'},
+  ],
+  returns:[
+    {id:'#RET001',order:'#ORD010',customer:'Vikram Das',item:'Adidas Track Pants',reason:'Wrong size received',amount:899,status:'pending',proof:'2 clear photos',date:'23 Apr'},
+    {id:'#RET002',order:'#ORD008',customer:'Meera Nair',item:'Nike Running Shoes',reason:'Defective — sole detached',amount:2499,status:'pending',proof:'3 photos + 1 video',date:'22 Apr'},
+    {id:'#RET003',order:'#ORD005',customer:'Rohit Kumar',item:'SS Cricket Bat',reason:'Not as described',amount:2199,status:'approved',proof:'1 comparison photo',date:'21 Apr'},
+  ],
+  products:[
+    {id:1,name:'DryFit Running Tee',brand:'Nike',category:'Men Topwear',gender:'Men',price:799,discount:20,stock:45,status:'active',sizes:'S,M,L,XL',images:['👕','👕'],sizeGuide:'',notifyMe:0,showOnApp:true},
+    {id:2,name:'English Willow Bat',brand:'SS',category:'Sports Gear',gender:'Unisex',price:2199,discount:15,stock:12,status:'active',sizes:'SH,SH+,FS',images:['🏏'],sizeGuide:'',notifyMe:0,showOnApp:true},
+    {id:3,name:'Anti-Slip Yoga Mat',brand:'Strauss',category:'Fitness',gender:'Unisex',price:699,discount:30,stock:0,status:'out_of_stock',sizes:'One Size',images:['🧘'],sizeGuide:'',notifyMe:23,showOnApp:true},
+    {id:4,name:'Predator Football Boots',brand:'Adidas',category:'Men Footwear',gender:'Men',price:1899,discount:10,stock:8,status:'active',sizes:'UK 6,7,8,9,10',images:['⚽'],sizeGuide:'',notifyMe:0,showOnApp:true},
+    {id:5,name:'Medium Support Sports Bra',brand:'Nivia',category:'Women Topwear',gender:'Women',price:599,discount:25,stock:23,status:'active',sizes:'S,M,L,XL',images:['👙'],sizeGuide:'',notifyMe:0,showOnApp:true},
+    {id:6,name:'Kids Cycling Helmet',brand:'btwin',category:'Kids Sports',gender:'Kids',price:1299,discount:0,stock:3,status:'low_stock',sizes:'S,M,L',images:['🪖'],sizeGuide:'',notifyMe:0,showOnApp:true},
+  ],
+  coupons:[
+    {id:1,code:'NC100',type:'flat',value:100,min:1499,used:34,max:100,active:true,expires:'2026-05-31'},
+    {id:2,code:'NC200',type:'flat',value:200,min:2499,used:18,max:50,active:true,expires:'2026-05-31'},
+    {id:3,code:'FLAT300',type:'flat',value:300,min:3499,used:5,max:30,active:true,expires:'2026-06-30'},
+    {id:4,code:'SUMMER20',type:'percent',value:20,min:999,used:67,max:200,active:false,expires:'2026-04-30'},
+  ],
+  banners:[
+    {id:1,tag:'NEW COLLECTION 2026',title:'Game Ready Apparel',sub:'Football Collection',price:'₹299 Onwards',cta:'Shop Now',color:'#0d1628',active:true,start:'',end:''},
+    {id:2,tag:'LIMITED TIME',title:'Up to 40% Off Running',sub:'Ends this Sunday',price:'₹499 Onwards',cta:'Grab Deal',color:'#0d1a10',active:false,start:'',end:''},
+  ],
+  categories:[
+    {id:1,name:'Men',gender:'Men',parent:'—'},{id:2,name:'Women',gender:'Women',parent:'—'},{id:3,name:'Kids',gender:'Kids',parent:'—'},
+    {id:4,name:'Topwear',gender:'Men',parent:'Men'},{id:5,name:'Bottomwear',gender:'Men',parent:'Men'},{id:6,name:'Footwear',gender:'Men',parent:'Men'},
+    {id:7,name:'Topwear',gender:'Women',parent:'Women'},{id:8,name:'Sports Gear',gender:'Kids',parent:'Kids'},
+  ],
+  brands:[
+    {id:1,name:'Nike',origin:'USA',products:12},{id:2,name:'Adidas',origin:'Germany',products:9},
+    {id:3,name:'SS',origin:'India',products:6},{id:4,name:'Strauss',origin:'India',products:8},
+    {id:5,name:'Nivia',origin:'India',products:11},{id:6,name:'btwin',origin:'France',products:4},
+  ],
+  customers:[
+    {id:1,name:'Rahul Sharma',email:'rahul@gmail.com',phone:'98765 43210',orders:3,spent:4295,joined:'Jan 2026',blocked:false},
+    {id:2,name:'Priya Singh',email:'priya@gmail.com',phone:'91234 56780',orders:1,spent:699,joined:'Feb 2026',blocked:false},
+    {id:3,name:'Arjun Mehta',email:'arjun@gmail.com',phone:'99887 76655',orders:2,spent:4098,joined:'Mar 2026',blocked:false},
+    {id:4,name:'Sneha Patel',email:'sneha@gmail.com',phone:'98712 34560',orders:5,spent:7840,joined:'Jan 2026',blocked:false},
+    {id:5,name:'Dev Malhotra',email:'dev@gmail.com',phone:'95432 10987',orders:2,spent:1798,joined:'Mar 2026',blocked:true},
+  ],
+  flashSales:[
+    {id:1,name:'Weekend Flash Sale',discount:40,category:'All',start:'2026-04-24 00:00',end:'2026-04-24 23:59',active:true},
+  ],
+  transactions:[
+    {id:'pay_Abc123',order:'#ORD004',customer:'Sneha Patel',amount:1198,fee:28.27,net:1169.73,method:'UPI',status:'success',date:'22 Apr 14:32'},
+    {id:'pay_Def456',order:'#ORD003',customer:'Arjun Mehta',amount:2199,fee:51.89,net:2147.11,method:'Card',status:'success',date:'21 Apr 11:15'},
+    {id:'pay_Ghi789',order:'#ORD002',customer:'Priya Singh',amount:699,fee:16.50,net:682.50,method:'UPI',status:'success',date:'21 Apr 09:40'},
+    {id:'pay_Jkl012',order:'#ORD006',customer:'Ananya Roy',amount:1299,fee:0,net:0,method:'UPI',status:'refunded',date:'20 Apr 16:20'},
+    {id:'pay_Mno345',order:'#ORD009',customer:'Vikram Das',amount:899,fee:21.22,net:877.78,method:'Net Banking',status:'success',date:'20 Apr 10:05'},
+  ],
+  refunds:[
+    {id:'ref_001',order:'#ORD006',customer:'Ananya Roy',amount:1299,reason:'Product cancelled',status:'issued',date:'23 Apr',razorpayId:'rfnd_Abc123'},
+    {id:'ref_002',order:'#ORD005',customer:'Rohit Kumar',amount:2199,reason:'Return approved',status:'issued',date:'22 Apr',razorpayId:'rfnd_Def456'},
+    {id:'ref_003',order:'#ORD008',customer:'Meera Nair',amount:2499,reason:'Defective product',status:'pending',date:'24 Apr',razorpayId:'—'},
+  ],
+  reviews:[
+    {id:1,product:'DryFit Running Tee',customer:'Rahul Sharma',rating:5,comment:'Excellent quality! Very comfortable.',date:'20 Apr',status:'published'},
+    {id:2,product:'Yoga Mat 6mm',customer:'Priya Singh',rating:4,comment:'Good grip, slightly thin.',date:'19 Apr',status:'published'},
+    {id:3,product:'Cricket Bat',customer:'Arjun Mehta',rating:3,comment:'Average quality for price.',date:'18 Apr',status:'pending'},
+  ],
+  searchTerms:[
+    {term:'cricket bat',count:234,resultFound:true},
+    {term:'running shoes',count:189,resultFound:true},
+    {term:'yoga mat',count:156,resultFound:true},
+    {term:'football',count:142,resultFound:true},
+    {term:'sports bra',count:98,resultFound:true},
+    {term:'helmet',count:76,resultFound:true},
+    {term:'badminton racket',count:67,resultFound:false},
+    {term:'swimming goggles',count:45,resultFound:false},
+  ],
+  permissions:{
+    staff:{dashboard:true,analytics:true,finance:false,reports:false,
+      ordersView:true,ordersAccept:false,ordersShip:false,ordersDeliver:false,
+      returnsView:true,returnsApprove:false,productsAdd:true,productsDelete:true,
+      coupons:true,banners:false,flashsale:false,homepage:false,cms:false,
+      categories:false,brands:false,customers:false,blockCustomers:false,
+      notifications:false,roles:false,auditlog:false,settings:false},
+    admin:{dashboard:true,analytics:true,finance:false,reports:true,
+      ordersView:true,ordersAccept:true,ordersShip:true,ordersDeliver:true,
+      returnsView:true,returnsApprove:true,productsAdd:true,productsDelete:true,
+      coupons:true,banners:true,flashsale:true,homepage:false,cms:false,
+      categories:true,brands:true,customers:true,blockCustomers:true,
+      notifications:true,roles:false,auditlog:false,settings:false},
+    owner:{dashboard:true,analytics:true,finance:true,reports:true,
+      ordersView:true,ordersAccept:true,ordersShip:true,ordersDeliver:true,
+      returnsView:true,returnsApprove:true,productsAdd:true,productsDelete:true,
+      coupons:true,banners:true,flashsale:true,homepage:true,cms:true,
+      categories:true,brands:true,customers:true,blockCustomers:true,
+      notifications:true,roles:true,auditlog:true,settings:true},
+  },
+  roleMembers:[
+    {id:1,name:'Owner (You)',role:'owner',key1:'••••••••••',key2:'••••••••••',added:'Jan 2026'},
+    {id:2,name:'Store Manager',role:'admin',key1:'••••••••••',key2:'••••••••••',added:'Feb 2026'},
+    {id:3,name:'Product Staff',role:'staff',key1:'••••••••••',key2:'••••••••••',added:'Mar 2026'},
+  ],
+  auditLog:[
+    {id:1,action:'Owner logged in',role:'owner',time:'24 Apr 09:12',color:'#ffb547'},
+    {id:2,action:'Product "Nike Tee" added',role:'staff',time:'24 Apr 01:28',color:'#00d68f'},
+    {id:3,action:'Order #ORD003 marked shipped',role:'admin',time:'23 Apr 13:45',color:'#4f7cff'},
+    {id:4,action:'Coupon NC100 deactivated',role:'owner',time:'23 Apr 12:10',color:'#ffb547'},
+    {id:5,action:'Failed login attempt (wrong key)',role:'—',time:'23 Apr 11:55',color:'#ff4d6a'},
+  ],
+  notifHistory:[
+    {id:1,title:'Weekend Flash Sale Live!',body:'40% off everything today only',sent:2847,date:'24 Apr 10:00'},
+    {id:2,title:'New Stock Alert',body:'Yoga mats back in stock',sent:2847,date:'22 Apr 09:30'},
+  ],
+  homepageLayout:[
+    {id:'offers',label:'Offers Strip',visible:true},
+    {id:'sports',label:'Shop by Sport Grid',visible:true},
+    {id:'hero',label:'Hero Banner',visible:true},
+    {id:'gender',label:'Shop by Gender',visible:true},
+    {id:'trending',label:'Trending Products',visible:true},
+    {id:'flashCountdown',label:'Flash Sale Countdown',visible:true},
+    {id:'featured',label:'Featured Products',visible:true},
+    {id:'recentlyViewed',label:'Recently Viewed',visible:true},
+  ],
+  features:{
+    guestMode:true,
+    wishlist:true,
+    reviews:true,
+    returns:true,
+    coupons:true,
+    notifications:true,
+    searchBar:true,
+    searchFilters:true,
+    sizeGuide:true,
+    relatedProducts:true,
+    recentlyViewed:true,
+    flashCountdown:true,
+    notifyMeOutOfStock:true,
+    invoiceDownload:true,
+    trackOrder:true,
+    addressAutocomplete:true,
+    multipleImages:true,
+    googleLogin:true,
+    facebookLogin:true,
+    phoneOTP:true,
+  },
+  pricing:{
+    freeDeliveryMin:999,
+    deliveryFee:49,
+    codCharge:0,
+    codEnabled:false,
+    platformFee:0,
+    minOrderValue:0,
+    razorpayFeePercent:2.36,
+  },
+  cms:{
+    // Store Info
+    storeName:'Sanjay Collection',
+    storeAddress:'123 Main Street, Andheri West, Mumbai, Maharashtra 400053',
+    storePhone:'+91 98765 43210',
+    storeEmail:'support@sanjaycollection.com',
+    storeHours:'Mon-Sat: 10:00 AM - 8:00 PM, Sun: 11:00 AM - 6:00 PM',
+    storeMapsLink:'https://maps.google.com/?q=Sanjay+Collection+Mumbai',
+    storeWhatsApp:'+91 98765 43210',
+    storeInstagram:'@sanjaycollection',
+    // Support
+    supportEmail:'support@sanjaycollection.com',
+    supportWhatsApp:'+91 98765 43210',
+    supportMsg:'We typically respond within 2-4 hours during business hours.',
+    // App Text
+    returnUploadPrompt:'Please upload a clear photo or video showing the issue with the product.',
+    returnPolicyText:'Returns accepted within 7 days of delivery. Item must be unused and in original packaging.',
+    returnsUnavailableMsg:'Returns are currently unavailable. Please contact support for assistance.',
+    refundPolicyText:'Refunds are processed within 5-7 business days to your original payment method.',
+    emptyCartMsg:'Your cart is empty — start shopping!',
+    freeDeliveryMsg:'Free delivery on orders above ₹999',
+    codNotAvailableMsg:'Cash on Delivery is not available. Please pay via UPI, Card or Net Banking.',
+    loginWelcomeMsg:'Welcome to Sanjay Collection',
+    loginSubMsg:'Login to continue shopping',
+    outOfStockMsg:'This product is currently out of stock.',
+    notifyMeConfirmMsg:'We will notify you when this product is back in stock!',
+    orderConfirmMsg:'Your order has been confirmed! We will ship it soon.',
+    phoneOTPUnavailableMsg:'Phone verification is temporarily unavailable. Please register using your email address.',
+    guestModeMsg:'You are browsing as a guest. Login or register to add items to cart and place orders.',
+    // Popup
+    popupEnabled:false,
+    popupMessage:'',
+    // Force Update
+    forceUpdate:false,
+    forceUpdateMsg:'A new version of Sanjay Collection is available. Please update to continue.',
+    minAppVersion:'1.0.0',
+    // Size Guide
+    sizeGuideUrl:'',
+  },
+  settings:{
+    storeName:'Sanjay Collection',
+    email:'support@sanjaycollection.com',
+    phone:'+91 98765 43210',
+    address:'Mumbai, Maharashtra',
+    instagram:'@sanjaycollection',
+    whatsapp:'+91 98765 43210',
+    maintenanceMode:false,
+  },
+};
+
+// ── HELPERS ───────────────────────────────────────
+const COLORS={accent:'#4f7cff',accent2:'#6b5aff',purple:'#9b6dff',cyan:'#00c2cc',green:'#00d68f',yellow:'#ffb547',red:'#ff4d6a'};
+
+function badge(status){
+  const m={pending:'Pending',paid:'Paid',shipped:'Shipped',delivered:'Delivered',cancelled:'Cancelled',
+    approved:'Approved',rejected:'Rejected',refunded:'Refunded',active:'Active',
+    out_of_stock:'Out of Stock',low_stock:'Low Stock',inactive:'Inactive',success:'Success',
+    failed:'Failed',issued:'Issued',published:'Published'};
+  return `<span class="badge badge-${status}">${m[status]||status}</span>`;
+}
+function money(v){return '₹'+Number(v).toLocaleString('en-IN');}
+function mkToggle(on,fn){
+  return `<button class="toggle" style="background:${on?COLORS.accent:'#1a2235'}" onclick="${fn}">
+    <div class="toggle-dot" style="transform:translateX(${on?18:0}px)"></div>
+  </button>`;
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))e.target.classList.remove('open');});
+
+let toastT;
+function toast(msg,type='success'){
+  const colors={success:COLORS.green,error:COLORS.red,warn:COLORS.yellow,info:COLORS.accent};
+  document.getElementById('toastDot').style.background=colors[type]||COLORS.green;
+  document.getElementById('toastMsg').textContent=msg;
+  const t=document.getElementById('toast');t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function previewImages(input){
+  const preview=document.getElementById('imgPreview');
+  if(!preview)return;
+  preview.innerHTML='';
+  Array.from(input.files).slice(0,4).forEach((file,i)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      preview.innerHTML+=`<div style="position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+        <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover"/>
+        ${i===0?'<div style="position:absolute;bottom:0;left:0;right:0;background:#4f7cff;color:#fff;font-size:8px;font-weight:700;text-align:center;padding:2px">MAIN</div>':''}
+      </div>`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function addAudit(action,role,color){
+  const now=new Date();
+  S.auditLog.unshift({id:Date.now(),action,
+    role:role||session.role||'—',
+    time:now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+    color:color||ROLES[session.role]?.color||'#888'});
+  if(S.auditLog.length>200)S.auditLog.pop();
+}
+
+function canDo(action){
+  const staffBlocked=['accept','decline','ship','deliver','approveReturn','rejectReturn','sendNotif','editBanner','blockCustomer'];
+  if(session.role==='staff'&&staffBlocked.includes(action)){toast('Your role cannot perform this action','error');return false;}
+  return true;
+}
+
+// ── INIT ──────────────────────────────────────────
+function initApp(){
+  const r=ROLES[session.role];
+  document.getElementById('sbRole').textContent=r.label;
+  document.getElementById('sbRole').style.color=r.color;
+  document.getElementById('roleChip').innerHTML=`<span style="width:7px;height:7px;border-radius:50%;background:${r.color};flex-shrink:0"></span><span style="font-size:12px;font-weight:700;color:${r.color}">${r.label}</span>`;
+  document.getElementById('sbUser').innerHTML=`<div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:8px;background:${r.color}20;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:${r.color}">${r.label.slice(0,2)}</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">${r.label}</div><div style="font-size:10px;font-weight:700;color:${r.color}">${r.label} Access</div></div></div>`;
+  buildSidebar();navTo('dashboard');
+}
+
+// ── SIDEBAR ───────────────────────────────────────
+const NAV=[
+  {id:'dashboard',label:'Dashboard',group:'Overview',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'},
+  {id:'analytics',label:'Analytics',group:'Overview',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+  {id:'finance',label:'Finance',group:'Overview',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>'},
+  {id:'reports',label:'Reports',group:'Overview',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>'},
+  {id:'orders',label:'Orders',group:'Commerce',badge:'pending',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>'},
+  {id:'returns',label:'Returns',group:'Commerce',badge:'returns',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>'},
+  {id:'products',label:'Products',group:'Commerce',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>'},
+  {id:'reviews',label:'Reviews',group:'Commerce',badge:'reviewsPending',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'},
+  {id:'coupons',label:'Coupons',group:'Commerce',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'},
+  {id:'banners',label:'Banners',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'},
+  {id:'flashsale',label:'Flash Sale',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'},
+  {id:'homepage',label:'Homepage Layout',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>'},
+  {id:'cms',label:'Content / Text',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'},
+  {id:'categories',label:'Categories',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>'},
+  {id:'brands',label:'Brands',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85"/></svg>'},
+  {id:'customers',label:'Customers',group:'Engagement',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>'},
+  {id:'notifications',label:'Notifications',group:'Engagement',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>'},
+  {id:'roles',label:'Role Manager',group:'Owner Only',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'},
+  {id:'auditlog',label:'Audit Log',group:'Owner Only',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>'},
+  {id:'settings',label:'Settings',group:'Owner Only',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>'},
+];
+
+function buildSidebar(){
+  const perms=PERMS[session.role]||[];
+  const groups={};
+  NAV.forEach(item=>{if(!groups[item.group])groups[item.group]=[];groups[item.group].push(item);});
+  let html='';
+  Object.entries(groups).forEach(([grp,items])=>{
+    html+=`<div class="sb-section-label">${grp}</div>`;
+    items.forEach(item=>{
+      const locked=!perms.includes(item.id);
+      const pending=item.badge==='pending'?S.orders.filter(o=>o.status==='pending').length:
+                    item.badge==='returns'?S.returns.filter(r=>r.status==='pending').length:
+                    item.badge==='reviewsPending'?S.reviews.filter(r=>r.status==='pending').length:0;
+      html+=`<div class="sb-item${item.id===currentPage?' act':''}${locked?' locked':''}" onclick="${locked?'void(0)':'navTo(\''+item.id+'\')'}">
+        ${item.icon}<span>${item.label}</span>
+        ${pending>0&&!locked?`<span class="sb-badge">${pending}</span>`:''}
+      </div>`;
+    });
+  });
+  document.getElementById('sbNav').innerHTML=html;
+}
+
+function navTo(page){
+  if(!PERMS[session.role||'staff'].includes(page)){toast('Access denied','error');return;}
+  currentPage=page;buildSidebar();renderPage(page);
+  addAudit(`Accessed ${page}`);
+}
+
+const PT={dashboard:'Dashboard',analytics:'Analytics',finance:'Finance & Transactions',reports:'Reports',
+  orders:'Orders',returns:'Returns & Refunds',products:'Products',reviews:'Product Reviews',coupons:'Coupons',
+  banners:'Banner Manager',flashsale:'Flash Sale',homepage:'Homepage Layout',cms:'Content Manager',
+  categories:'Categories',brands:'Brands',customers:'Customers',notifications:'Notifications',
+  roles:'Role Manager',auditlog:'Audit Log',settings:'Settings'};
+
+function renderPage(page){
+  document.getElementById('pageTitle').textContent=PT[page]||page;
+  document.getElementById('pageSub').textContent='Sanjay Collection · '+ROLES[session.role]?.label;
+  const R={dashboard:rDashboard,analytics:rAnalytics,finance:rFinance,reports:rReports,
+    orders:rOrders,returns:rReturns,products:rProducts,reviews:rReviews,coupons:rCoupons,
+    banners:rBanners,flashsale:rFlash,homepage:rHomepage,cms:rCMS,
+    categories:rCategories,brands:rBrands,customers:rCustomers,notifications:rNotifications,
+    roles:rRoles,auditlog:rAuditLog,settings:rSettings};
+  if(R[page])R[page]();
+}
+
+// ── CHART ──────────────────────────────────────────
+function drawBar(id,labels,data,hexColor){
+  const canvas=document.getElementById(id);if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||400,H=160;
+  canvas.width=W*2;canvas.height=H*2;canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const max=Math.max(...data)||1;
+  const pad={t:8,r:8,b:26,l:42};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  ctx.strokeStyle='#1e2d47';ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*(1-i/4);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#4a5a75';ctx.font='8px JetBrains Mono';ctx.textAlign='right';
+    const val=max*i/4;ctx.fillText(val>=1000?Math.round(val/1000)+'k':Math.round(val),pad.l-3,y+3);
   }
-  tick();
-  setInterval(tick, 1000);
+  const bw=(cw/data.length)*0.55,gap=(cw/data.length)*0.45;
+  data.forEach((v,i)=>{
+    const x=pad.l+i*(cw/data.length)+gap/2;
+    const barH=Math.max((v/max)*ch,2);const y=pad.t+ch-barH;
+    ctx.fillStyle=hexColor;ctx.globalAlpha=0.85;
+    const r=3;ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+bw-r,y);
+    ctx.quadraticCurveTo(x+bw,y,x+bw,y+r);ctx.lineTo(x+bw,y+barH);
+    ctx.lineTo(x,y+barH);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#4a5a75';ctx.font='7px Outfit';ctx.textAlign='center';
+    ctx.fillText(labels[i],x+bw/2,H-pad.b+10);
+  });
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────────────
-function showPage(name, el) {
-  document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
-  document.getElementById('page-'+name).classList.remove('hidden');
-  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('act'));
-  if(el) el.classList.add('act');
-  const titles = {dashboard:'Dashboard',orders:'Orders',returns:'Returns & Refunds',
-    products:'Products',coupons:'Coupons & Offers',notifications:'Send Notification'};
-  document.getElementById('pageTitle').textContent = titles[name]||name;
-  if(name==='orders') renderOrders();
-  if(name==='returns') renderReturns();
-  if(name==='products') renderProducts();
-  if(name==='coupons') renderCoupons();
-  if(name==='notifications') renderNotifTemplates();
+// ── DASHBOARD ──────────────────────────────────────
+async function rDashboard(){
+  document.getElementById('pageBody').innerHTML=`<div class="loader-wrap" style="display:flex;align-items:center;justify-content:center;padding:60px;flex-direction:column;gap:12px"><div style="width:28px;height:28px;border:3px solid #1e2d47;border-top:3px solid #4f7cff;border-radius:50%;animation:spin 0.8s linear infinite"></div><div style="font-size:12px;color:var(--text3)">Loading dashboard...</div></div>`;
+  const [statsD,ordersD,productsD] = await Promise.all([
+    fetch('https://sportzone-backend-production.up.railway.app/stats?key=sportzone_admin_2026').then(r=>r.json()).catch(()=>({})),
+    api('/orders?limit=5'),
+    api('/products?limit=5'),
+  ]);
+  const totalOrders=statsD.orders||0;
+  const totalRevenue=statsD.revenue||0;
+  const totalProducts=statsD.products||0;
+  const totalUsers=statsD.users||0;
+  const recentOrders=ordersD.orders||[];
+  const pending=recentOrders.filter(o=>o.order_status==='confirmed'||o.order_status==='pending').length;
+
+  const stats=[
+    {l:'Total Revenue',v:money(totalRevenue),c:'All time',up:true,col:COLORS.accent},
+    {l:'Total Orders',v:totalOrders,c:`${pending} pending`,up:pending===0,col:COLORS.purple},
+    {l:'Total Products',v:totalProducts,c:'In catalogue',up:true,col:COLORS.cyan},
+    {l:'Registered Users',v:totalUsers,c:'Total signups',up:true,col:COLORS.green},
+  ];
+  document.getElementById('pageBody').innerHTML=`
+    <div class="stat-grid">${stats.map(s=>`
+      <div class="stat-card" style="border-color:${s.col}20">
+        <div class="stat-label">${s.l}</div>
+        <div class="stat-value" style="color:${s.col}">${s.v}</div>
+        <div class="stat-change" style="color:${s.up?COLORS.green:COLORS.red}">${s.up?'↑':'↓'} ${s.c}</div>
+      </div>`).join('')}
+    </div>
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="chart-wrap"><div class="chart-title">Revenue — Last 7 Days</div><div class="chart-sub">Daily earnings</div><canvas id="rc" height="160"></canvas></div>
+      <div class="chart-wrap"><div class="chart-title">Orders — Last 7 Days</div><div class="chart-sub">Daily count</div><canvas id="oc" height="160"></canvas></div>
+    </div>
+    <div class="sec-head"><div><div class="sec-title">Recent Orders (Live)</div></div><button class="btn btn-ghost" onclick="rOrders()">View All</button></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>
+      ${recentOrders.length===0?'<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">No orders yet</td></tr>':recentOrders.slice(0,5).map(o=>`<tr>
+        <td class="td-mono">#${o.id}</td>
+        <td class="td-main">${o.user_name||'Customer'}</td>
+        <td>${o.items?o.items.slice(0,2).map(i=>i.name).join(', '):'—'}</td>
+        <td style="color:var(--text);font-weight:700;font-family:'JetBrains Mono',monospace">${money(o.total_amount)}</td>
+        <td>${badge(o.order_status||'pending')}</td>
+        <td class="td-mono">${new Date(o.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  `;
+  setTimeout(()=>{
+    drawBar('rc',['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],[0,0,0,0,0,0,Math.max(totalRevenue,0)],COLORS.accent);
+    drawBar('oc',['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],[0,0,0,0,0,0,totalOrders],COLORS.purple);
+  },50);
 }
 
-// ── BADGE HELPER ──────────────────────────────────────────────────────────
-function badge(status) {
-  const map = {
-    pending:'⏳ Pending',paid:'💳 Paid',processing:'⚙️ Processing',
-    shipped:'🚚 Shipped',delivered:'✅ Delivered',cancelled:'❌ Cancelled',
-    approved:'✅ Approved',rejected:'❌ Rejected',
-    active:'● Active',out_of_stock:'● Out of Stock',low_stock:'● Low Stock'
-  };
-  return `<span class="badge badge-${status}">${map[status]||status}</span>`;
+// ── ANALYTICS ──────────────────────────────────────
+function rAnalytics(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="stat-grid">${[
+      {l:'Total Installs',v:'2,847',c:'+134 this week',col:COLORS.cyan},
+      {l:'Daily Active Users',v:'384',c:'Today',col:COLORS.green},
+      {l:'Products Sold Today',v:'47',c:'+8 vs yesterday',col:COLORS.yellow},
+      {l:'Avg Order Value',v:'₹1,847',c:'+₹120 this week',col:COLORS.accent},
+      {l:'Cart Abandonment',v:'34%',c:'-4% this week',col:COLORS.purple},
+      {l:'Return Rate',v:'2.1%',c:'Industry avg 5%',col:COLORS.green},
+      {l:'New Users Today',v:'28',c:'vs 19 yesterday',col:COLORS.accent2},
+      {l:'Avg Rating',v:'4.3 ★',c:'from 302 reviews',col:COLORS.yellow},
+    ].map(s=>`<div class="stat-card" style="border-color:${s.col}20"><div class="stat-label">${s.l}</div><div class="stat-value" style="color:${s.col};font-size:20px">${s.v}</div><div class="stat-change" style="color:${COLORS.green}">↑ ${s.c}</div></div>`).join('')}</div>
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="chart-wrap"><div class="chart-title">App Installs — 14 Days</div><div class="chart-sub">Daily new installs</div><canvas id="ic" height="160"></canvas></div>
+      <div class="chart-wrap"><div class="chart-title">Products Sold — Daily</div><div class="chart-sub">Units per day</div><canvas id="sc" height="160"></canvas></div>
+    </div>
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:16px">Best Selling Products</div>
+        ${[['DryFit Running Tee','Nike',89,'₹71,111'],['Yoga Mat 6mm','Strauss',72,'₹50,328'],['Sports Bra M','Nivia',61,'₹36,539'],['Cricket Bat','SS',48,'₹1,05,552'],['Football Boots','Adidas',34,'₹64,566']].map(([n,b,s,r],i)=>`
+          <div class="metric-row">
+            <div style="display:flex;align-items:center;gap:8px;width:160px">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);width:16px">#${i+1}</span>
+              <div><div style="font-size:12px;font-weight:700;color:var(--text)">${n}</div><div style="font-size:10px;color:var(--text3)">${b}</div></div>
+            </div>
+            <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(s/89*100)}%"></div></div>
+            <div style="text-align:right"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text)">${s}</div><div style="font-size:10px;color:var(--text3)">${r}</div></div>
+          </div>`).join('')}
+      </div>
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:16px">Most Viewed Products</div>
+        ${[['DryFit Running Tee',1240],['Yoga Mat 6mm',987],['Sports Bra M',876],['Cricket Bat',654],['Football Boots',543]].map(([n,v],i)=>`
+          <div class="metric-row">
+            <div style="font-size:12px;font-weight:600;color:var(--text);width:160px">#${i+1} ${n}</div>
+            <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(v/1240*100)}%;background:${COLORS.cyan}"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:${COLORS.cyan}">${v}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:16px">Top Search Terms</div>
+        ${S.searchTerms.map(s=>`
+          <div class="metric-row">
+            <div style="display:flex;align-items:center;gap:8px;flex:1">
+              <div style="font-size:12px;font-weight:600;color:var(--text);width:140px">${s.term}</div>
+              <span style="font-size:10px;padding:2px 8px;border-radius:6px;background:${s.resultFound?'#0a1f14':'#1f0a10'};color:${s.resultFound?COLORS.green:COLORS.red};font-weight:700">${s.resultFound?'Found':'No Results'}</span>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text)">${s.count}</div>
+          </div>`).join('')}
+        <div class="info-box" style="margin-top:14px;margin-bottom:0;font-size:11px">
+          "No Results" terms = products you should consider stocking
+        </div>
+      </div>
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:16px">User Growth</div>
+        ${[['Jan 2026',234],['Feb 2026',312],['Mar 2026',489],['Apr 2026',847]].map(([m,u])=>`
+          <div class="metric-row">
+            <div style="font-size:12px;color:var(--text);font-weight:600;width:80px">${m}</div>
+            <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(u/847*100)}%;background:${COLORS.green}"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${COLORS.green}">${u}</div>
+          </div>`).join('')}
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <div class="sec-title" style="font-size:13px;margin-bottom:12px">Login Methods</div>
+          ${[['Email OTP',45],['Phone OTP',32],['Google',18],['Facebook',5]].map(([m,p])=>`
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div style="font-size:12px;color:var(--text2);width:100px">${m}</div>
+              <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px"><div style="height:6px;width:${p}%;background:${COLORS.accent};border-radius:4px"></div></div>
+              <div style="font-size:12px;font-weight:700;color:var(--accent)">${p}%</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(()=>{
+    drawBar('ic',['11A','12A','13A','14A','15A','16A','17A','18A','19A','20A','21A','22A','23A','24A'],[18,24,31,28,35,22,19,27,34,41,38,45,52,48],COLORS.cyan);
+    drawBar('sc',['18A','19A','20A','21A','22A','23A','24A'],[32,28,39,45,41,53,47],COLORS.yellow);
+  },50);
 }
 
-// ── DASHBOARD ─────────────────────────────────────────────────────────────
-function initDashboard() {
-  const pending = orders.filter(o=>o.status==='pending').length;
-  const returnPending = returns.filter(r=>r.status==='pending').length;
-  document.getElementById('pendingBadge').textContent = pending;
-  document.getElementById('returnBadge').textContent = returnPending;
+// ── FINANCE ────────────────────────────────────────
+function rFinance(){
+  const totalGross=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.amount,0);
+  const totalFees=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.fee,0);
+  const totalNet=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.net,0);
+  const totalRefunds=S.refunds.filter(r=>r.status==='issued').reduce((s,r)=>s+r.amount,0);
+  const pendingSettlement=Math.round(totalNet*0.15);
 
-  const revenue = orders.filter(o=>['paid','shipped','delivered'].includes(o.status))
-    .reduce((s,o)=>s+o.total,0);
+  document.getElementById('pageBody').innerHTML=`
+    <div class="stat-grid">${[
+      {l:'Total Gross Earnings',v:money(totalGross),c:'All payments received',col:COLORS.accent},
+      {l:'Net Earnings (after fees)',v:money(Math.round(totalNet)),c:`Razorpay fee: ${money(Math.round(totalFees))}`,col:COLORS.green},
+      {l:'Pending Settlement',v:money(pendingSettlement),c:'Razorpay T+2 cycle',col:COLORS.yellow},
+      {l:'Total Refunds Issued',v:money(totalRefunds),c:`${S.refunds.filter(r=>r.status==='issued').length} refunds`,col:COLORS.red},
+    ].map(s=>`<div class="stat-card" style="border-color:${s.col}20"><div class="stat-label">${s.l}</div><div class="stat-value" style="color:${s.col};font-size:18px">${s.v}</div><div class="stat-change" style="color:var(--text3)">${s.c}</div></div>`).join('')}</div>
 
-  const stats = [
-    {label:'Total Revenue',value:'₹'+revenue.toLocaleString('en-IN'),change:'↑ Live data',up:true,icon:'💰',color:'#3B82F6'},
-    {label:'Total Orders',value:orders.length,change:`${pending} pending`,up:pending===0,icon:'📦',color:'#6366F1'},
-    {label:'Active Products',value:products.filter(p=>p.status==='active').length,change:`${products.filter(p=>p.stock===0).length} out of stock`,up:false,icon:'🏷️',color:'#F59E0B'},
-    {label:'Pending Orders',value:pending,change:pending>0?'Needs action':'All clear ✅',up:pending===0,icon:'⏳',color:pending>0?'#F43F5E':'#10B981'},
-    {label:'Returns Pending',value:returnPending,change:returnPending>0?'Needs review':'All clear ✅',up:returnPending===0,icon:'🔄',color:returnPending>0?'#F43F5E':'#10B981'},
-    {label:'Active Coupons',value:coupons.filter(c=>c.active).length,change:'Running now',up:true,icon:'🎟️',color:'#10B981'},
+    <div class="sec-head"><div><div class="sec-title">Transaction Log</div><div class="sec-sub">All payment transactions</div></div></div>
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>Razorpay ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Fee (2.36%)</th><th>Net</th><th>Method</th><th>Status</th><th>Date</th>
+    </tr></thead><tbody>
+      ${S.transactions.map(t=>`<tr>
+        <td class="td-mono">${t.id}</td><td class="td-mono">${t.order}</td>
+        <td class="td-main">${t.customer}</td>
+        <td style="font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace">${money(t.amount)}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:${COLORS.red}">${t.fee>0?money(t.fee):'—'}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:${COLORS.green}">${t.net>0?money(Math.round(t.net)):'—'}</td>
+        <td>${t.method}</td><td>${badge(t.status)}</td><td class="td-mono">${t.date}</td>
+      </tr>`).join('')}
+    </tbody></table></div>
+
+    <div class="sec-head"><div><div class="sec-title">Refund Log</div></div></div>
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>Refund ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Razorpay Refund ID</th><th>Status</th><th>Date</th>
+    </tr></thead><tbody>
+      ${S.refunds.map(r=>`<tr>
+        <td class="td-mono">${r.id}</td><td class="td-mono">${r.order}</td>
+        <td class="td-main">${r.customer}</td>
+        <td style="font-weight:700;color:${COLORS.red};font-family:'JetBrains Mono',monospace">${money(r.amount)}</td>
+        <td>${r.reason}</td><td class="td-mono">${r.razorpayId}</td>
+        <td>${badge(r.status)}</td><td class="td-mono">${r.date}</td>
+      </tr>`).join('')}
+    </tbody></table></div>
+    <div class="info-box">Razorpay settles every T+2 business days. Refunds take 5-7 days. Track on <a href="https://dashboard.razorpay.com" target="_blank" style="color:var(--accent)">Razorpay Dashboard</a>.</div>
+  `;
+}
+
+// ── REPORTS ────────────────────────────────────────
+function rReports(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="chart-wrap"><div class="chart-title">Monthly Revenue</div><div class="chart-sub">₹ earned per month</div><canvas id="mr" height="160"></canvas></div>
+      <div class="chart-wrap"><div class="chart-title">Monthly Orders</div><div class="chart-sub">Orders per month</div><canvas id="mo" height="160"></canvas></div>
+    </div>
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:14px">Product Performance</div>
+        ${[
+          {n:'DryFit Running Tee',views:1240,cart:312,sold:89,conv:'28.5%',rev:'₹71,111'},
+          {n:'Yoga Mat 6mm',views:987,cart:241,sold:72,conv:'29.9%',rev:'₹50,328'},
+          {n:'Sports Bra M',views:876,cart:198,sold:61,conv:'30.8%',rev:'₹36,539'},
+          {n:'Cricket Bat',views:654,cart:124,sold:48,conv:'38.7%',rev:'₹1,05,552'},
+          {n:'Football Boots',views:543,cart:98,sold:34,conv:'34.7%',rev:'₹64,566'},
+        ].map(p=>`
+          <div class="metric-row" style="gap:0">
+            <div style="min-width:130px"><div style="font-size:12px;font-weight:700;color:var(--text)">${p.n}</div></div>
+            <div style="display:flex;gap:12px;flex:1;justify-content:flex-end">
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Views</div><div style="font-size:11px;font-weight:700;color:var(--text)">${p.views}</div></div>
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Cart</div><div style="font-size:11px;font-weight:700;color:${COLORS.yellow}">${p.cart}</div></div>
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Sold</div><div style="font-size:11px;font-weight:700;color:${COLORS.green}">${p.sold}</div></div>
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Conv.</div><div style="font-size:11px;font-weight:700;color:${COLORS.accent}">${p.conv}</div></div>
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Rev.</div><div style="font-size:11px;font-weight:700;color:var(--text)">${p.rev}</div></div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:14px">Refund Report</div>
+        ${[['Total Refunds Issued','3','₹5,397'],['Pending Refunds','1','₹2,499'],['Avg Refund Amount','—','₹1,799'],['Top Reason','Wrong size','—'],['Refund Rate','2.1%','of orders']].map(([l,v,s])=>`
+          <div class="metric-row">
+            <div style="font-size:13px;color:var(--text2)">${l}</div>
+            <div style="text-align:right"><div style="font-weight:700;color:var(--text)">${v}</div><div style="font-size:10px;color:var(--text3)">${s}</div></div>
+          </div>`).join('')}
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Refunds by Reason</div>
+          ${[['Wrong size',40],['Defective',35],['Not as described',25]].map(([r,p])=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="font-size:11px;color:var(--text2);width:110px">${r}</div>
+              <div style="flex:1;background:var(--surface2);border-radius:4px;height:5px"><div style="height:5px;width:${p}%;background:${COLORS.red};border-radius:4px"></div></div>
+              <div style="font-size:11px;font-weight:700;color:${COLORS.red}">${p}%</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(()=>{
+    drawBar('mr',['Jan','Feb','Mar','Apr'],[48200,72400,91800,72100],COLORS.accent);
+    drawBar('mo',['Jan','Feb','Mar','Apr'],[28,41,62,47],COLORS.purple);
+  },50);
+}
+
+// ── ORDERS ────────────────────────────────────────
+let _allOrders=[];
+async function rOrders(){
+  const isStaff=session.role==='staff';
+  document.getElementById('pageBody').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;padding:60px;flex-direction:column;gap:10px"><div style="width:24px;height:24px;border:3px solid #1e2d47;border-top:3px solid #4f7cff;border-radius:50%;animation:spin 0.8s linear infinite"></div><div style="font-size:12px;color:var(--text3)">Loading orders...</div></div>`;
+  const d=await api('/orders?limit=100');
+  _allOrders=d.orders||[];
+  const filters=['all','confirmed','shipped','delivered','cancelled','return_requested'];
+  const filtered=orderFilter==='all'?_allOrders:_allOrders.filter(o=>o.order_status===orderFilter);
+
+  document.getElementById('pageBody').innerHTML=`
+    ${isStaff?'<div class="warn-box">View only — your role cannot accept or ship orders</div>':''}
+    <div class="filter-row">
+      ${filters.map(f=>`<div class="filter-pill${orderFilter===f?' act':''}" onclick="orderFilter='${f}';rOrders()">${(f.charAt(0).toUpperCase()+f.slice(1)).replace('_',' ')}</div>`).join('')}
+      <span style="margin-left:auto;font-size:11px;color:var(--text3)">${filtered.length} orders</span>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th>${!isStaff?'<th>Actions</th>':''}
+    </tr></thead><tbody>
+      ${filtered.length===0?'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text3)">No orders yet</td></tr>':filtered.map(o=>`<tr>
+        <td class="td-mono">#${o.id}</td>
+        <td class="td-main">${o.user_name||'Customer'}</td>
+        <td style="font-size:12px">${o.items?o.items.slice(0,2).map(i=>i.name).join(', '):'—'}${o.items&&o.items.length>2?' +more':''}</td>
+        <td style="color:var(--text);font-weight:700;font-family:'JetBrains Mono',monospace">${money(o.total_amount)}</td>
+        <td>${badge(o.order_status||'pending')}</td>
+        <td class="td-mono">${new Date(o.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</td>
+        ${!isStaff?`<td><div class="td-actions">${orderActions(o)}</div></td>`:''}
+      </tr>`).join('')}
+    </tbody></table></div>
+  `;
+}
+
+function orderActions(o){
+  const s=o.order_status;
+  if(s==='confirmed')return`<button class="btn btn-warn btn-sm" onclick="openShip(${o.id})">Ship</button>`;
+  if(s==='shipped')return`<button class="btn btn-success btn-sm" onclick="updOrder(${o.id},'delivered')">Delivered</button>`;
+  if(s==='return_requested')return`<button class="btn btn-success btn-sm" onclick="updOrder(${o.id},'delivered')">Approve Return</button>`;
+  return`<span style="font-size:11px;color:var(--text3)">—</span>`;
+}
+async function updOrder(id,status){
+  const d=await api(`/orders/${id}/status`,'PUT',{status});
+  if(d.success){addAudit(`Order #${id} → ${status}`);buildSidebar();rOrders();toast(`Order updated to ${status}`);}
+  else toast(d.message||'Update failed','error');
+}
+function openShip(id){shipOrderId=id;['courierName','srId','trackUrl'].forEach(i=>document.getElementById(i).value='');openModal('modal-ship');}
+async function confirmShip(){
+  await updOrder(shipOrderId,'shipped');
+  closeModal('modal-ship');
+}
+
+// ── RETURNS ───────────────────────────────────────
+function rReturns(){
+  const isStaff=session.role==='staff';
+  document.getElementById('pageBody').innerHTML=`
+    ${isStaff?`<div class="warn-box">View only — your role cannot approve or reject returns</div>`:''}
+    ${!S.features.returns?`<div class="danger-box">Returns are currently DISABLED. Users see "${S.cms.returnsUnavailableMsg}"</div>`:''}
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>Return ID</th><th>Order</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th>
+    </tr></thead><tbody>
+      ${S.returns.map(r=>`<tr>
+        <td class="td-mono">${r.id}</td><td class="td-mono">${r.order}</td>
+        <td class="td-main">${r.customer}</td><td>${r.item}</td>
+        <td style="color:var(--text);font-weight:700">${money(r.amount)}</td>
+        <td>${badge(r.status)}</td><td class="td-mono">${r.date}</td>
+        <td><div class="td-actions">
+          <button class="btn btn-icon" onclick="viewReturn('${r.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          ${r.status==='pending'&&!isStaff?`<button class="btn btn-success btn-sm" onclick="handleReturn('${r.id}','approved')">Approve</button><button class="btn btn-danger btn-sm" onclick="handleReturn('${r.id}','rejected')">Reject</button>`:''}
+        </div></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  `;
+}
+
+function viewReturn(id){
+  const r=S.returns.find(x=>x.id===id);
+  const isStaff=session.role==='staff';
+  document.getElementById('sharedModalInner').innerHTML=`
+    <div class="modal-head"><span class="modal-title">Return — ${r.id}</span><div class="modal-close" onclick="closeModal('sharedModal')">×</div></div>
+    <div class="two-col" style="margin-bottom:16px">
+      ${[['Customer',r.customer],['Order',r.order],['Item',r.item],['Amount',money(r.amount)]].map(([k,v])=>`
+        <div style="background:var(--surface2);border-radius:11px;padding:11px 14px">
+          <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-bottom:4px">${k}</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">${v}</div>
+        </div>`).join('')}
+    </div>
+    <div class="f-label" style="margin-bottom:6px">Customer Reason</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 16px;font-size:13px;color:var(--text2);margin-bottom:12px">${r.reason}</div>
+    <div class="f-label" style="margin-bottom:6px">Proof Submitted</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 16px;font-size:13px;color:var(--text2);margin-bottom:12px">${r.proof} · ${r.date}</div>
+    ${r.status==='pending'&&!isStaff?`<div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-success" style="flex:1;justify-content:center" onclick="handleReturn('${id}','approved');closeModal('sharedModal')">Approve & Refund</button>
+      <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="handleReturn('${id}','rejected');closeModal('sharedModal')">Reject Return</button>
+    </div>`:`<div style="font-size:13px;color:var(--text3)">Status: <strong style="color:var(--text)">${r.status}</strong></div>`}
+  `;
+  openModal('sharedModal');
+}
+
+function handleReturn(id,status){
+  S.returns=S.returns.map(r=>r.id===id?{...r,status}:r);
+  if(status==='approved'){
+    const r=S.returns.find(x=>x.id===id);
+    S.refunds.unshift({id:'ref_'+Date.now(),order:r.order,customer:r.customer,amount:r.amount,reason:'Return approved',status:'pending',date:'Now',razorpayId:'—'});
+  }
+  addAudit(`Return ${id} ${status}`);buildSidebar();rReturns();toast(`Return ${id} ${status}`);
+}
+
+// ── PRODUCTS ──────────────────────────────────────
+async function rProducts(){
+  document.getElementById('pageBody').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;padding:60px;flex-direction:column;gap:10px"><div style="width:24px;height:24px;border:3px solid #1e2d47;border-top:3px solid #4f7cff;border-radius:50%;animation:spin 0.8s linear infinite"></div><div style="font-size:12px;color:var(--text3)">Loading products...</div></div>`;
+  const d=await api('/products?limit=100');
+  const products=d.products||[];
+
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Products</div><div class="sec-sub">${products.length} total · ${products.filter(p=>p.stock_quantity===0).length} out of stock</div></div>
+      <button class="btn btn-primary" onclick="openModal('modal-product')">+ Add Product</button>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>Image</th><th>Name</th><th>Brand</th><th>Gender</th><th>Price</th><th>Disc.</th><th>Stock</th><th>Status</th><th>Actions</th>
+    </tr></thead><tbody>
+      ${products.length===0?'<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text3)">No products yet — add your first product!</td></tr>':products.map(p=>{
+        const stock=p.stock_quantity||0;
+        const status=stock===0?'out_of_stock':stock<5?'low_stock':'active';
+        const img=p.images&&p.images[0]?p.images[0]:'';
+        return `<tr>
+          <td><div style="width:40px;height:40px;border-radius:8px;background:var(--surface2);overflow:hidden;display:flex;align-items:center;justify-content:center">
+            ${img&&img.startsWith('http')?`<img src="${img}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>`:'📦'}
+          </div></td>
+          <td class="td-main">${p.name}</td>
+          <td>${p.brand_name||'—'}</td><td>${p.gender||'—'}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text)">${money(p.sale_price||p.base_price)}</td>
+          <td style="color:${COLORS.accent2};font-weight:700">${p.discount_percent||0}%</td>
+          <td style="color:${stock===0?COLORS.red:stock<5?COLORS.yellow:COLORS.green};font-weight:700;font-family:'JetBrains Mono',monospace">${stock}</td>
+          <td>${badge(status)}</td>
+          <td><div class="td-actions">
+            <button class="btn btn-icon" onclick="viewProductDetails(${p.id},'${encodeURIComponent(p.name)}',${stock},${p.discount_percent||0})">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button class="btn btn-icon red" onclick="delProduct(${p.id})">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            </button>
+          </div></td>
+        </tr>`;
+      }).join('')}
+    </tbody></table></div>
+  `;
+}
+
+function toggleProductVisibility(id){
+  api(`/products/${id}`,'PUT',{is_active:true}).then(()=>{rProducts();toast('Product visibility updated');});
+}
+
+function viewProductDetails(id,name,stock,disc){
+  document.getElementById('sharedModalInner').innerHTML=`
+    <div class="modal-head"><span class="modal-title">${decodeURIComponent(name)}</span><div class="modal-close" onclick="closeModal('sharedModal')">×</div></div>
+    <div class="f-label" style="margin-bottom:6px">Update Stock</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input class="f-input" style="margin:0;flex:1" type="number" id="newStock" value="${stock}" placeholder="New stock quantity"/>
+      <button class="btn btn-primary" onclick="updateStock(${id})">Update</button>
+    </div>
+    <div class="f-label" style="margin-bottom:6px">Update Discount %</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input class="f-input" style="margin:0;flex:1" type="number" id="newDisc" value="${disc}" placeholder="Discount %"/>
+      <button class="btn btn-warn" onclick="updateDisc(${id})">Update</button>
+    </div>
+  `;
+  openModal('sharedModal');
+}
+
+async function updateStock(id){
+  const newStock=+document.getElementById('newStock').value;
+  const d=await api(`/products/${id}`,'PUT',{stock_quantity:newStock,name:'',description:'',gender:'',base_price:0,discount_percent:0,is_active:true});
+  addAudit(`Product stock updated to ${newStock}`);closeModal('sharedModal');rProducts();toast('Stock updated');
+}
+
+async function updateDisc(id){
+  const newDisc=+document.getElementById('newDisc').value;
+  addAudit(`Product discount updated to ${newDisc}%`);closeModal('sharedModal');rProducts();toast('Will update after reconnect');
+}
+
+function sendNotifyMe(id){toast('Notification feature coming soon','info');}
+
+async function addProduct(){
+  const name=document.getElementById('pName').value;
+  const price=+document.getElementById('pPrice').value;
+  if(!name||!price){toast('Name and price required','error');return;}
+
+  const formData=new FormData();
+  formData.append('name',name);
+  formData.append('description',document.getElementById('pDesc').value||'');
+  formData.append('gender',document.getElementById('pGender').value||'Unisex');
+  formData.append('base_price',price);
+  formData.append('discount_percent',document.getElementById('pDisc').value||0);
+  formData.append('stock_quantity',document.getElementById('pStock').value||0);
+  formData.append('sizes',document.getElementById('pSizes').value||'S,M,L,XL');
+  formData.append('size_guide_url',document.getElementById('pSizeGuide').value||'');
+
+  // Add image files
+  const imgInput=document.getElementById('pImgFiles');
+  if(imgInput&&imgInput.files){
+    for(let i=0;i<Math.min(imgInput.files.length,4);i++){
+      formData.append('images',imgInput.files[i]);
+    }
+  }
+
+  const btn=document.querySelector('#modal-product .f-submit');
+  btn.textContent='Uploading...';btn.disabled=true;
+
+  const d=await api('/products','POST',formData,true);
+  btn.textContent='Add Product';btn.disabled=false;
+
+  if(d.success){
+    closeModal('modal-product');
+    ['pName','pBrand','pCat','pPrice','pDisc','pStock','pSizes','pDesc','pSizeGuide'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+    if(document.getElementById('pImgFiles'))document.getElementById('pImgFiles').value='';
+    addAudit(`Product "${name}" added to backend`);
+    rProducts();toast('Product added to store!');
+  } else {
+    toast(d.message||d.error||'Failed to add product','error');
+  }
+}
+
+async function delProduct(id){
+  if(!confirm('Remove this product from your store?'))return;
+  const d=await api(`/products/${id}`,'DELETE');
+  if(d.success){addAudit(`Product #${id} deleted`);rProducts();toast('Product removed','warn');}
+  else toast(d.message||'Failed to delete','error');
+}
+
+// ── REVIEWS ───────────────────────────────────────
+function rReviews(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Product Reviews</div><div class="sec-sub">${S.reviews.filter(r=>r.status==='pending').length} pending approval</div></div>
+    </div>
+    <div class="filter-row">
+      ${['all','pending','published'].map(f=>`<div class="filter-pill${f==='all'?' act':''}" onclick="filterReviews('${f}',this)">${f.charAt(0).toUpperCase()+f.slice(1)}</div>`).join('')}
+    </div>
+    <div class="tbl-wrap" id="reviewsTable"><table><thead><tr>
+      <th>Product</th><th>Customer</th><th>Rating</th><th>Comment</th><th>Date</th><th>Status</th><th>Actions</th>
+    </tr></thead><tbody>
+      ${renderReviewRows(S.reviews)}
+    </tbody></table></div>
+  `;
+}
+
+function renderReviewRows(list){
+  return list.map(r=>`<tr>
+    <td class="td-main">${r.product}</td>
+    <td>${r.customer}</td>
+    <td><span style="color:${COLORS.yellow};font-weight:700">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></td>
+    <td style="max-width:200px;font-size:12px">${r.comment}</td>
+    <td class="td-mono">${r.date}</td>
+    <td>${badge(r.status)}</td>
+    <td><div class="td-actions">
+      ${r.status==='pending'?`
+        <button class="btn btn-success btn-sm" onclick="approveReview(${r.id})">Publish</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id})">Delete</button>
+      `:`<button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id})">Delete</button>`}
+    </div></td>
+  </tr>`).join('');
+}
+
+function filterReviews(f,el){
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('act'));
+  el.classList.add('act');
+  const list=f==='all'?S.reviews:S.reviews.filter(r=>r.status===f);
+  document.querySelector('#reviewsTable tbody').innerHTML=renderReviewRows(list);
+}
+
+function approveReview(id){
+  S.reviews=S.reviews.map(r=>r.id===id?{...r,status:'published'}:r);
+  addAudit(`Review approved`);buildSidebar();rReviews();toast('Review published');
+}
+function deleteReview(id){
+  S.reviews=S.reviews.filter(r=>r.id!==id);
+  addAudit('Review deleted');buildSidebar();rReviews();toast('Review deleted','warn');
+}
+
+// ── COUPONS ───────────────────────────────────────
+function rCoupons(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Coupons</div><div class="sec-sub">${S.coupons.filter(c=>c.active).length} active</div></div>
+      <button class="btn btn-primary" onclick="openModal('modal-coupon')">+ New Coupon</button>
+    </div>
+    <div class="coupon-grid">${S.coupons.map(c=>`
+      <div class="coupon-card" style="opacity:${c.active?1:0.5}">
+        <div class="coupon-dashes"></div>
+        <div style="position:absolute;top:14px;right:14px;z-index:2">${mkToggle(c.active,`toggleCoupon(${c.id})`)}</div>
+        <div class="coupon-inner">
+          <div class="coupon-code">${c.code}</div>
+          <div class="coupon-val">${c.type==='flat'?money(c.value)+' OFF':c.value+'% OFF'}</div>
+          <div class="coupon-meta">Min ${money(c.min)} · ${c.used}${c.max?'/'+c.max:''} used · Exp ${c.expires}</div>
+          <div class="coupon-bar-wrap"><div class="coupon-bar" style="width:${c.max?Math.min(c.used/c.max*100,100):25}%"></div></div>
+        </div>
+      </div>`).join('')}
+    </div>
+  `;
+}
+function toggleCoupon(id){
+  S.coupons=S.coupons.map(c=>c.id===id?{...c,active:!c.active}:c);
+  const c=S.coupons.find(x=>x.id===id);
+  addAudit(`Coupon ${c.code} ${c.active?'activated':'deactivated'}`);rCoupons();toast(`Coupon ${c.active?'activated':'deactivated'}`);
+}
+function addCoupon(){
+  const code=document.getElementById('cCode').value.toUpperCase();const value=+document.getElementById('cVal').value;
+  if(!code||!value){toast('Code and value required','error');return;}
+  S.coupons.unshift({id:Date.now(),code,type:document.getElementById('cType').value,value,
+    min:+document.getElementById('cMin').value||0,max:+document.getElementById('cMax').value||null,
+    used:0,active:true,expires:document.getElementById('cExp').value||'—'});
+  closeModal('modal-coupon');['cCode','cVal','cMin','cMax','cExp'].forEach(i=>document.getElementById(i).value='');
+  addAudit(`Coupon ${code} created`);rCoupons();toast('Coupon created');
+}
+
+// ── BANNERS ───────────────────────────────────────
+function rBanners(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Banner Manager</div><div class="sec-sub">Changes are instant for all users</div></div>
+      <button class="btn btn-primary" onclick="newBanner()">+ New Banner</button>
+    </div>
+    <div class="two-col">${S.banners.map(b=>`
+      <div class="card card-p">
+        <div class="banner-preview" style="background:linear-gradient(120deg,${b.color} 50%,${b.color}cc)">
+          <div style="font-size:9px;font-weight:700;color:${COLORS.accent};letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">${b.tag}</div>
+          <div style="font-size:20px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:4px">${b.title}</div>
+          <div style="font-size:11px;color:#888;margin-bottom:6px">${b.sub}</div>
+          <div style="font-size:16px;font-weight:800;color:#fff">${b.price}</div>
+          <div style="display:inline-block;margin-top:10px;background:#fff;color:#111;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700">${b.cta} →</div>
+        </div>
+        ${b.start?`<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Scheduled: ${b.start} → ${b.end||'No end'}</div>`:''}
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;color:var(--text2);font-weight:600">Active</span>
+            ${mkToggle(b.active,`setActiveBanner(${b.id})`)}
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="editBanner(${b.id})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="delBanner(${b.id})">Delete</button>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+  `;
+}
+
+function setActiveBanner(id){S.banners=S.banners.map(b=>({...b,active:b.id===id}));addAudit('Active banner changed');rBanners();toast('Banner updated');}
+function editBanner(id){
+  const b=S.banners.find(x=>x.id===id);editBannerId=id;
+  document.getElementById('bannerModalTitle').textContent='Edit Banner';
+  document.getElementById('bTag').value=b.tag;document.getElementById('bTitle').value=b.title;
+  document.getElementById('bSub').value=b.sub;document.getElementById('bPrice').value=b.price;
+  document.getElementById('bCta').value=b.cta;document.getElementById('bColor').value=b.color;
+  document.getElementById('bStart').value=b.start||'';document.getElementById('bEnd').value=b.end||'';
+  openModal('modal-banner');
+}
+function newBanner(){editBannerId=null;document.getElementById('bannerModalTitle').textContent='New Banner';['bTag','bTitle','bSub','bPrice','bCta','bStart','bEnd'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});document.getElementById('bColor').value='#0d1628';openModal('modal-banner');}
+function saveBanner(){
+  const data={tag:document.getElementById('bTag').value,title:document.getElementById('bTitle').value,
+    sub:document.getElementById('bSub').value,price:document.getElementById('bPrice').value,
+    cta:document.getElementById('bCta').value,color:document.getElementById('bColor').value,
+    start:document.getElementById('bStart').value,end:document.getElementById('bEnd').value};
+  if(!data.title){toast('Title required','error');return;}
+  if(editBannerId){S.banners=S.banners.map(b=>b.id===editBannerId?{...b,...data}:b);toast('Banner updated');}
+  else{S.banners.push({id:Date.now(),...data,active:false});toast('Banner created');}
+  addAudit(`Banner "${data.title}" saved`);closeModal('modal-banner');rBanners();
+}
+function delBanner(id){
+  const b=S.banners.find(x=>x.id===id);
+  if(b.active){toast('Deactivate banner first','error');return;}
+  S.banners=S.banners.filter(x=>x.id!==id);addAudit('Banner deleted');rBanners();toast('Banner deleted','warn');
+}
+
+// ── FLASH SALE ────────────────────────────────────
+function rFlash(){
+  clearInterval(flashTimer);
+  const active=S.flashSales.find(f=>f.active);
+  document.getElementById('pageBody').innerHTML=`
+    ${active?`<div class="flash-active" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:${COLORS.purple};letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Active Flash Sale</div>
+          <div style="font-size:18px;font-weight:800;color:var(--text)">${active.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">${active.discount}% OFF · ${active.category} · Ends ${active.end}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="endFlash(${active.id})">End Sale</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Time remaining</div>
+      <div class="flash-countdown" id="flashCd">--:--:--</div>
+    </div>`:`<div class="card card-p" style="margin-bottom:20px;text-align:center;padding:32px;color:var(--text3)">No active flash sale</div>`}
+    <div class="sec-head"><div><div class="sec-title">Flash Sales</div></div><button class="btn btn-primary" onclick="openModal('modal-flash')">+ New Flash Sale</button></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Discount</th><th>Category</th><th>Start</th><th>End</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      ${S.flashSales.map(f=>`<tr>
+        <td class="td-main">${f.name}</td><td style="color:${COLORS.red};font-weight:700">${f.discount}% OFF</td>
+        <td>${f.category}</td><td class="td-mono">${f.start}</td><td class="td-mono">${f.end}</td>
+        <td>${badge(f.active?'active':'inactive')}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="endFlash(${f.id})">End</button></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  `;
+  if(active){
+    flashTimer=setInterval(()=>{
+      const diff=new Date(active.end)-new Date();if(diff<=0){clearInterval(flashTimer);return;}
+      const el=document.getElementById('flashCd');
+      if(el)el.textContent=`${String(Math.floor(diff/3600000)).padStart(2,'0')}:${String(Math.floor(diff%3600000/60000)).padStart(2,'0')}:${String(Math.floor(diff%60000/1000)).padStart(2,'0')}`;
+    },1000);
+  }
+}
+function endFlash(id){S.flashSales=S.flashSales.map(f=>f.id===id?{...f,active:false}:f);addAudit('Flash sale ended');rFlash();toast('Flash sale ended','warn');}
+function createFlashSale(){
+  const name=document.getElementById('fsName').value;if(!name){toast('Name required','error');return;}
+  S.flashSales.unshift({id:Date.now(),name,discount:+document.getElementById('fsDisc').value||20,
+    category:document.getElementById('fsCat').value||'All',
+    start:document.getElementById('fsStart').value,end:document.getElementById('fsEnd').value,active:true});
+  closeModal('modal-flash');addAudit(`Flash sale "${name}" launched`);rFlash();toast('Flash sale launched');
+}
+
+// ── HOMEPAGE LAYOUT ───────────────────────────────
+function rHomepage(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Homepage Layout</div><div class="sec-sub">Control what users see — instant effect, no update needed</div></div>
+    </div>
+    <div class="two-col">
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:6px">Section Visibility</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Toggle sections on/off instantly</div>
+        ${S.homepageLayout.map(item=>`
+          <div class="setting-row">
+            <div><div class="setting-label">${item.label}</div></div>
+            ${mkToggle(item.visible,`toggleSection('${item.id}')`)}
+          </div>`).join('')}
+      </div>
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:6px">Feature Toggles</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Enable or disable app features instantly</div>
+        ${Object.entries(S.features).map(([k,v])=>`
+          <div class="setting-row">
+            <div>
+              <div class="setting-label" style="text-transform:capitalize;font-size:13px">${k.replace(/([A-Z])/g,' $1')}</div>
+              ${k==='returns'&&!v?`<div style="font-size:10px;color:${COLORS.red};font-weight:600;margin-top:2px">Users see: "${S.cms.returnsUnavailableMsg.slice(0,40)}..."</div>`:''}
+            </div>
+            ${mkToggle(v,`toggleFeature('${k}')`)}
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card card-p" style="margin-top:16px">
+      <div class="sec-title" style="margin-bottom:6px">Pricing Rules</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Changes reflect instantly in app</div>
+      <div class="three-col">
+        ${[
+          ['Free Delivery Above (₹)','freeDeliveryMin'],
+          ['Delivery Fee (₹)','deliveryFee'],
+          ['Minimum Order Value (₹)','minOrderValue'],
+          ['COD Charge (₹)','codCharge'],
+          ['Platform Fee (₹)','platformFee'],
+          ['Razorpay Fee %','razorpayFeePercent'],
+        ].map(([l,k])=>`
+          <div>
+            <label class="f-label">${l}</label>
+            <input class="f-input" style="margin:0" type="number" value="${S.pricing[k]}" onchange="S.pricing['${k}']=+this.value"/>
+          </div>`).join('')}
+      </div>
+      <button class="f-submit" style="margin-top:16px;width:auto;padding:10px 24px" onclick="addAudit('Pricing rules updated');toast('Pricing rules saved')">Save Pricing Rules</button>
+    </div>
+  `;
+}
+function toggleSection(id){S.homepageLayout=S.homepageLayout.map(s=>s.id===id?{...s,visible:!s.visible}:s);addAudit(`Section "${id}" toggled`);rHomepage();toast('Layout updated');}
+function toggleFeature(k){S.features[k]=!S.features[k];addAudit(`Feature "${k}" ${S.features[k]?'enabled':'disabled'}`);rHomepage();toast(`${k} ${S.features[k]?'enabled':'disabled'}`);}
+
+// ── CMS ───────────────────────────────────────────
+function rCMS(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Content Manager</div><div class="sec-sub">Edit all text users see in the app — instant effect, no update needed</div></div>
+      <button class="btn btn-primary" onclick="saveCMS()">Save All</button>
+    </div>
+
+    <!-- POPUP & FORCE UPDATE -->
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:6px">App Popup Message</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Show a popup to all users when they open the app</div>
+        <div class="setting-row" style="padding-bottom:14px">
+          <div><div class="setting-label">Enable Popup</div></div>
+          ${mkToggle(S.cms.popupEnabled,`S.cms.popupEnabled=!S.cms.popupEnabled;rCMS();toast('Popup '+(S.cms.popupEnabled?'enabled':'disabled'))`)}
+        </div>
+        <div class="f-row"><label class="f-label">Popup Message</label>
+          <textarea class="f-textarea" id="cms_popupMessage" rows="3" placeholder="Type your popup message...">${S.cms.popupMessage}</textarea>
+        </div>
+      </div>
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:6px">Force Update</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Force users to update before they can continue</div>
+        <div class="setting-row" style="padding-bottom:14px">
+          <div><div class="setting-label">Force Update</div><div class="setting-sub" style="color:${COLORS.red}">Use only when critical</div></div>
+          ${mkToggle(S.cms.forceUpdate,`S.cms.forceUpdate=!S.cms.forceUpdate;rCMS();toast('Force update '+(S.cms.forceUpdate?'ENABLED':'disabled'),S.cms.forceUpdate?'warn':'success')`)}
+        </div>
+        <div class="f-row"><label class="f-label">Update Message</label>
+          <textarea class="f-textarea" id="cms_forceUpdateMsg" rows="2">${S.cms.forceUpdateMsg}</textarea>
+        </div>
+        <div class="f-row"><label class="f-label">Min App Version</label>
+          <input class="f-input" id="cms_minAppVersion" value="${S.cms.minAppVersion}" placeholder="1.0.0"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORE INFO -->
+    <div class="card card-p" style="margin-bottom:20px">
+      <div class="sec-title" style="margin-bottom:16px">Store Information (shown in "Our Store" screen)</div>
+      <div class="two-col">
+        ${[
+          ['Store Name','storeName','Sanjay Collection'],
+          ['Store Phone','storePhone','+91 98765 43210'],
+          ['Store Email','storeEmail','support@sanjaycollection.com'],
+          ['Store Instagram','storeInstagram','@sanjaycollection'],
+          ['WhatsApp Number','storeWhatsApp','+91 98765 43210'],
+          ['Google Maps Link','storeMapsLink','https://maps.google.com/...'],
+        ].map(([l,k,ph])=>`
+          <div class="f-row"><label class="f-label">${l}</label>
+            <input class="f-input" id="cms_${k}" value="${S.cms[k]}" placeholder="${ph}"/>
+          </div>`).join('')}
+      </div>
+      <div class="f-row"><label class="f-label">Store Address</label>
+        <textarea class="f-textarea" id="cms_storeAddress" rows="2">${S.cms.storeAddress}</textarea>
+      </div>
+      <div class="f-row"><label class="f-label">Working Hours</label>
+        <input class="f-input" id="cms_storeHours" value="${S.cms.storeHours}"/>
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="card card-p" style="margin-bottom:20px">
+      <div class="sec-title" style="margin-bottom:16px">Support Contact (shown in "Support" screen)</div>
+      <div class="two-col">
+        <div class="f-row"><label class="f-label">Support Email</label>
+          <input class="f-input" id="cms_supportEmail" value="${S.cms.supportEmail}"/>
+        </div>
+        <div class="f-row"><label class="f-label">Support WhatsApp</label>
+          <input class="f-input" id="cms_supportWhatsApp" value="${S.cms.supportWhatsApp}"/>
+        </div>
+      </div>
+      <div class="f-row"><label class="f-label">Support Message</label>
+        <input class="f-input" id="cms_supportMsg" value="${S.cms.supportMsg}"/>
+      </div>
+    </div>
+
+    <!-- APP TEXT -->
+    <div class="card card-p">
+      <div class="sec-title" style="margin-bottom:16px">All App Text</div>
+      <div class="two-col">
+        ${[
+          {key:'returnUploadPrompt',label:'Return Upload Prompt',desc:'Shown when user submits return',rows:2},
+          {key:'returnPolicyText',label:'Return Policy',desc:'Shown on returns page',rows:2},
+          {key:'returnsUnavailableMsg',label:'Returns Unavailable Message',desc:'Shown when returns are OFF',rows:1},
+          {key:'refundPolicyText',label:'Refund Policy',desc:'Shown on refund info page',rows:2},
+          {key:'emptyCartMsg',label:'Empty Cart Message',desc:'Shown when cart is empty',rows:1},
+          {key:'freeDeliveryMsg',label:'Free Delivery Message',desc:'Shown in cart/product pages',rows:1},
+          {key:'codNotAvailableMsg',label:'COD Not Available Message',desc:'Shown at checkout',rows:2},
+          {key:'loginWelcomeMsg',label:'Login Welcome Message',desc:'Main heading on login screen',rows:1},
+          {key:'loginSubMsg',label:'Login Sub Message',desc:'Subtext on login screen',rows:1},
+          {key:'outOfStockMsg',label:'Out of Stock Message',desc:'Shown on product page',rows:1},
+          {key:'notifyMeConfirmMsg',label:'Notify Me Confirmation',desc:'After user taps Notify Me',rows:1},
+          {key:'orderConfirmMsg',label:'Order Confirmed Message',desc:'After successful payment',rows:1},
+          {key:'phoneOTPUnavailableMsg',label:'Phone OTP Unavailable',desc:'When Firebase quota exceeded',rows:2},
+          {key:'guestModeMsg',label:'Guest Mode Banner',desc:'Shown to guest users browsing',rows:2},
+          {key:'sizeGuideUrl',label:'Default Size Guide Image URL',desc:'Shown when no product-specific guide',rows:1},
+        ].map(f=>`
+          <div class="cms-item">
+            <div class="cms-item-label">${f.label}</div>
+            <div class="cms-item-desc">${f.desc}</div>
+            <textarea class="f-textarea" id="cms_${f.key}" rows="${f.rows}" style="font-size:12px">${S.cms[f.key]}</textarea>
+          </div>`).join('')}
+      </div>
+      <button class="f-submit" style="margin-top:16px" onclick="saveCMS()">Save All Changes</button>
+    </div>
+  `;
+}
+
+function saveCMS(){
+  document.querySelectorAll('[id^="cms_"]').forEach(el=>{
+    const key=el.id.replace('cms_','');if(key in S.cms)S.cms[key]=el.value;
+  });
+  addAudit('CMS content updated');toast('All content saved');
+}
+
+// ── CATEGORIES ────────────────────────────────────
+function rCategories(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Categories</div><div class="sec-sub">${S.categories.length} total</div></div>
+      <button class="btn btn-primary" onclick="showCatModal()">+ Add Category</button>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Gender</th><th>Parent</th><th>Actions</th></tr></thead><tbody>
+      ${S.categories.map(c=>`<tr>
+        <td class="td-main">${c.name}</td><td>${c.gender}</td><td>${c.parent||'—'}</td>
+        <td><button class="btn btn-icon red" onclick="delCat(${c.id})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        </button></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  `;
+}
+function showCatModal(){
+  document.getElementById('sharedModalInner').innerHTML=`
+    <div class="modal-head"><span class="modal-title">Add Category</span><div class="modal-close" onclick="closeModal('sharedModal')">×</div></div>
+    <div class="f-row"><label class="f-label">Name</label><input class="f-input" id="catName" placeholder="Topwear"/></div>
+    <div class="f-grid">
+      <div class="f-row"><label class="f-label">Gender</label><select class="f-select" id="catGender"><option>Men</option><option>Women</option><option>Kids</option><option>Unisex</option></select></div>
+      <div class="f-row"><label class="f-label">Parent</label><select class="f-select" id="catParent"><option value="">None</option>${S.categories.filter(c=>!c.parent||c.parent==='—').map(c=>`<option>${c.name}</option>`).join('')}</select></div>
+    </div>
+    <button class="f-submit" onclick="addCat()">Add Category</button>
+  `;openModal('sharedModal');
+}
+function addCat(){
+  const name=document.getElementById('catName')?.value;if(!name){toast('Name required','error');return;}
+  S.categories.push({id:Date.now(),name,gender:document.getElementById('catGender').value,parent:document.getElementById('catParent').value||'—'});
+  closeModal('sharedModal');addAudit(`Category "${name}" added`);rCategories();toast('Category added');
+}
+function delCat(id){S.categories=S.categories.filter(c=>c.id!==id);addAudit('Category removed');rCategories();toast('Category removed','warn');}
+
+// ── BRANDS ────────────────────────────────────────
+function rBrands(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Brands</div><div class="sec-sub">${S.brands.length} total</div></div>
+      <button class="btn btn-primary" onclick="showBrandModal()">+ Add Brand</button>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr><th>Brand</th><th>Origin</th><th>Products</th><th>Actions</th></tr></thead><tbody>
+      ${S.brands.map(b=>`<tr>
+        <td><div style="display:flex;align-items:center;gap:10px">
+          <div style="width:30px;height:30px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:${COLORS.accent}">${b.name.slice(0,2).toUpperCase()}</div>
+          <span class="td-main">${b.name}</span></div></td>
+        <td>${b.origin}</td>
+        <td style="font-family:'JetBrains Mono',monospace;color:var(--text)">${b.products}</td>
+        <td><button class="btn btn-icon red" onclick="delBrand(${b.id})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        </button></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  `;
+}
+function showBrandModal(){
+  document.getElementById('sharedModalInner').innerHTML=`
+    <div class="modal-head"><span class="modal-title">Add Brand</span><div class="modal-close" onclick="closeModal('sharedModal')">×</div></div>
+    <div class="f-row"><label class="f-label">Brand Name</label><input class="f-input" id="brandName" placeholder="Nike"/></div>
+    <div class="f-row"><label class="f-label">Country of Origin</label><input class="f-input" id="brandOrigin" placeholder="USA"/></div>
+    <button class="f-submit" onclick="addBrand()">Add Brand</button>
+  `;openModal('sharedModal');
+}
+function addBrand(){
+  const name=document.getElementById('brandName')?.value;if(!name){toast('Name required','error');return;}
+  S.brands.unshift({id:Date.now(),name,origin:document.getElementById('brandOrigin').value||'India',products:0});
+  closeModal('sharedModal');addAudit(`Brand "${name}" added`);rBrands();toast('Brand added');
+}
+function delBrand(id){S.brands=S.brands.filter(b=>b.id!==id);addAudit('Brand removed');rBrands();toast('Brand removed','warn');}
+
+// ── CUSTOMERS ─────────────────────────────────────
+function rCustomers(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Customers</div><div class="sec-sub">${S.customers.length} registered · ${S.customers.filter(c=>c.blocked).length} blocked</div></div>
+      <input class="f-input" style="margin:0;width:220px;padding:8px 14px" placeholder="Search..." oninput="filterCust(this.value)"/>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr>
+      <th>Customer</th><th>Email</th><th>Phone</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Status</th><th>Actions</th>
+    </tr></thead><tbody id="custBody">${custRows(S.customers)}</tbody></table></div>
+  `;
+}
+function custRows(list){
+  return list.map(c=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px"><div class="user-avatar">${c.name.slice(0,2).toUpperCase()}</div><span class="td-main">${c.name}</span></div></td>
+    <td style="color:var(--text2)">${c.email}</td><td class="td-mono">${c.phone}</td>
+    <td style="font-family:'JetBrains Mono',monospace;color:var(--text)">${c.orders}</td>
+    <td style="font-weight:700;color:var(--text)">${money(c.spent)}</td>
+    <td class="td-mono">${c.joined}</td>
+    <td>${badge(c.blocked?'cancelled':'active')}</td>
+    <td><button class="btn btn-sm ${c.blocked?'btn-success':'btn-danger'}" onclick="toggleBlock(${c.id})">${c.blocked?'Unblock':'Block'}</button></td>
+  </tr>`).join('');
+}
+function filterCust(q){const el=document.getElementById('custBody');if(el)el.innerHTML=custRows(S.customers.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())||c.email.includes(q)||c.phone.includes(q)));}
+function toggleBlock(id){
+  S.customers=S.customers.map(c=>c.id===id?{...c,blocked:!c.blocked}:c);
+  const c=S.customers.find(x=>x.id===id);
+  addAudit(`Customer ${c.name} ${c.blocked?'blocked':'unblocked'}`);rCustomers();toast(`${c.name} ${c.blocked?'blocked':'unblocked'}`);
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────
+const NOTIF_TEMPLATES=[
+  {t:'Flash Deal — Today Only',b:'Up to 40% OFF on selected sports gear. Limited time!'},
+  {t:'New Collection Arrived',b:'Fresh styles just dropped. Check out our latest collection!'},
+  {t:'Back in Stock',b:'Your favourite item is available again. Order before it sells out!'},
+  {t:'Your cart is waiting',b:'You left items in your cart. Complete your purchase now!'},
+  {t:'Order Shipped',b:'Your order is on the way! Track it in the app.'},
+  {t:'Exclusive Member Offer',b:'Special discount just for you — use code MEMBER20 for 20% off!'},
+];
+function rNotifications(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="two-col">
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:16px">Send Notification</div>
+          <div class="f-row"><label class="f-label">Title</label><input class="f-input" id="nTitle" placeholder="Notification title..."/></div>
+          <div class="f-row"><label class="f-label">Message</label><textarea class="f-textarea" id="nBody" rows="3" placeholder="Notification message..."></textarea></div>
+          <div class="f-row"><label class="f-label">Send To</label>
+            <select class="f-select" id="nTarget">
+              <option value="all">All Users (2,847)</option>
+              <option value="cart">Users with items in cart (~412)</option>
+              <option value="buyers">Previous buyers only (~891)</option>
+              <option value="guests">Guest users only</option>
+            </select>
+          </div>
+          <div class="f-row"><label class="f-label">Schedule (optional)</label><input class="f-input" id="nSchedule" type="datetime-local"/></div>
+          <button class="f-submit" style="margin-top:4px" onclick="sendNotif()">Send Notification</button>
+        </div>
+      </div>
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:14px">Quick Templates</div>
+          ${NOTIF_TEMPLATES.map(t=>`
+            <div class="notif-template" onclick="document.getElementById('nTitle').value='${t.t}';document.getElementById('nBody').value='${t.b}'">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">${t.t}</div>
+              <div style="font-size:11px;color:var(--text3)">${t.b}</div>
+            </div>`).join('')}
+        </div>
+        <div class="card card-p">
+          <div class="sec-title" style="margin-bottom:14px">Recently Sent</div>
+          ${S.notifHistory.map(n=>`
+            <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+              <div style="display:flex;justify-content:space-between">
+                <div><div style="font-size:13px;font-weight:700;color:var(--text)">${n.title}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${n.body}</div></div>
+                <div style="text-align:right;flex-shrink:0;margin-left:12px">
+                  <div style="font-size:11px;font-weight:700;color:${COLORS.green}">${n.sent.toLocaleString()} sent</div>
+                  <div style="font-size:10px;color:var(--text3)">${n.date}</div>
+                </div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function sendNotif(){
+  const title=document.getElementById('nTitle').value;const body=document.getElementById('nBody').value;
+  if(!title||!body){toast('Title and message required','error');return;}
+  const target=document.getElementById('nTarget').value;
+  S.notifHistory.unshift({id:Date.now(),title,body,sent:target==='all'?2847:target==='cart'?412:target==='buyers'?891:234,date:'Now'});
+  document.getElementById('nTitle').value='';document.getElementById('nBody').value='';
+  addAudit(`Notification "${title}" sent`);rNotifications();toast('Notification sent');
+}
+
+// ── ROLE MANAGER ──────────────────────────────────
+function rRoles(){
+  const PERM_ROWS=[
+    {group:'Pages & Sections',items:[
+      {key:'dashboard',label:'Dashboard'},
+      {key:'analytics',label:'Analytics'},
+      {key:'finance',label:'Finance & Transactions'},
+      {key:'reports',label:'Reports'},
+      {key:'customers',label:'Customers'},
+      {key:'notifications',label:'Notifications'},
+      {key:'banners',label:'Banners'},
+      {key:'flashsale',label:'Flash Sale'},
+      {key:'homepage',label:'Homepage Layout'},
+      {key:'cms',label:'Content Manager'},
+      {key:'categories',label:'Categories'},
+      {key:'brands',label:'Brands'},
+      {key:'coupons',label:'Coupons'},
+      {key:'auditlog',label:'Audit Log'},
+      {key:'settings',label:'Settings'},
+    ]},
+    {group:'Orders',items:[
+      {key:'ordersView',label:'View Orders'},
+      {key:'ordersAccept',label:'Accept / Decline Orders'},
+      {key:'ordersShip',label:'Mark as Shipped'},
+      {key:'ordersDeliver',label:'Mark as Delivered'},
+    ]},
+    {group:'Returns',items:[
+      {key:'returnsView',label:'View Returns'},
+      {key:'returnsApprove',label:'Approve / Reject Returns'},
+    ]},
+    {group:'Products',items:[
+      {key:'productsAdd',label:'Add Products'},
+      {key:'productsDelete',label:'Delete Products'},
+    ]},
+    {group:'Customers',items:[
+      {key:'blockCustomers',label:'Block / Unblock Customers'},
+    ]},
   ];
 
-  document.getElementById('statsGrid').innerHTML = stats.map(s=>`
-    <div class="stat-card" style="border-color:${s.color}20">
-      <div class="stat-icon">${s.icon}</div>
-      <div class="stat-label">${s.label}</div>
-      <div class="stat-value" style="color:${s.color}">${s.value}</div>
-      <div class="stat-change" style="color:${s.up?'#10B981':'#F43F5E'}">${s.change}</div>
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Role Manager</div><div class="sec-sub">Owner eyes only</div></div>
+      <button class="btn btn-primary" onclick="openModal('modal-role')">+ Add Member</button>
     </div>
-  `).join('');
+    <div class="tbl-wrap" style="margin-bottom:24px"><table><thead><tr><th>Name</th><th>Role</th><th>Key 1</th><th>Key 2</th><th>Added</th><th>Actions</th></tr></thead><tbody>
+      ${S.roleMembers.map(m=>`<tr>
+        <td class="td-main">${m.name}</td>
+        <td><span class="badge badge-${m.role}">${m.role.charAt(0).toUpperCase()+m.role.slice(1)}</span></td>
+        <td class="td-mono">${m.key1}</td><td class="td-mono">${m.key2}</td>
+        <td class="td-mono">${m.added}</td>
+        <td>${m.role!=='owner'?`<button class="btn btn-danger btn-sm" onclick="removeRole(${m.id})">Remove</button>`:'<span style="font-size:11px;color:var(--text3)">—</span>'}</td>
+      </tr>`).join('')}
+    </tbody></table></div>
 
-  document.getElementById('dashOrdersBody').innerHTML = orders.slice(0,6).map(o=>`
-    <tr>
-      <td><span class="td-mono">${o.id}</span></td>
-      <td><span class="td-name">${o.customer}</span></td>
-      <td>${o.items}</td>
-      <td><span style="color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace">₹${o.total.toLocaleString('en-IN')}</span></td>
-      <td>${badge(o.status)}</td>
-      <td class="td-mono">${o.date}</td>
-    </tr>
-  `).join('');
-}
-
-// ── ORDERS ────────────────────────────────────────────────────────────────
-function renderOrders() {
-  const filters = ['all','pending','paid','shipped','delivered','cancelled'];
-  document.getElementById('orderFilters').innerHTML = filters.map(f=>`
-    <button class="filter-pill ${currentOrderFilter===f?'act':''}" onclick="setOrderFilter('${f}')">${f.charAt(0).toUpperCase()+f.slice(1)}</button>
-  `).join('');
-
-  const filtered = currentOrderFilter==='all' ? orders : orders.filter(o=>o.status===currentOrderFilter);
-  document.getElementById('orderCount').textContent = `${filtered.length} of ${orders.length} orders`;
-
-  document.getElementById('ordersBody').innerHTML = filtered.map(o=>`
-    <tr>
-      <td><span class="td-mono">${o.id}</span></td>
-      <td><span class="td-name">${o.customer}</span><div style="font-size:11px;color:#334155">${o.address}</div></td>
-      <td class="td-mono">${o.phone}</td>
-      <td>${o.items}</td>
-      <td><span style="color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace">₹${o.total.toLocaleString('en-IN')}</span></td>
-      <td>${badge(o.status)}</td>
-      <td class="td-mono">${o.date}</td>
-      <td>${orderActions(o)}</td>
-    </tr>
-  `).join('');
-}
-
-function setOrderFilter(f) {
-  currentOrderFilter = f;
-  renderOrders();
-}
-
-function orderActions(o) {
-  if(o.status==='pending') return `
-    <div class="actions">
-      <button class="btn-accept" onclick="updateOrder('${o.id}','paid')">✓ Accept</button>
-      <button class="btn-decline" onclick="updateOrder('${o.id}','cancelled')">✕ Decline</button>
-    </div>`;
-  if(o.status==='paid') return `
-    <button class="btn-ship" onclick="openShipModal('${o.id}')">🚚 Ship</button>`;
-  if(o.status==='shipped') return `
-    <button class="btn-accept" onclick="updateOrder('${o.id}','delivered')">✓ Delivered</button>`;
-  return `<span style="font-size:11px;color:#334155">—</span>`;
-}
-
-function updateOrder(id, status) {
-  orders = orders.map(o => o.id===id ? {...o,status} : o);
-  initDashboard();
-  renderOrders();
-  showToast(`Order ${id} → ${status} ✅`);
-}
-
-function openShipModal(id) {
-  currentShipOrderId = id;
-  document.getElementById('shipRocketId').value = '';
-  document.getElementById('trackUrl').value = '';
-  openModal('shipModal');
-}
-
-function confirmShip() {
-  updateOrder(currentShipOrderId, 'shipped');
-  closeModal('shipModal');
-  showToast(`Order ${currentShipOrderId} marked as shipped 🚚`);
-}
-
-// ── RETURNS ───────────────────────────────────────────────────────────────
-function renderReturns() {
-  document.getElementById('returnCount').textContent = `${returns.filter(r=>r.status==='pending').length} pending review`;
-  document.getElementById('returnsBody').innerHTML = returns.map(r=>`
-    <tr>
-      <td><span class="td-mono">${r.id}</span></td>
-      <td><span class="td-mono">${r.order}</span></td>
-      <td><span class="td-name">${r.customer}</span></td>
-      <td>${r.item}</td>
-      <td><span style="color:#fff;font-weight:700">₹${r.amount}</span></td>
-      <td>${badge(r.status)}</td>
-      <td class="td-mono">${r.date}</td>
-      <td>
-        <div class="actions">
-          <button class="btn-icon" onclick="viewReturn('${r.id}')" title="View details">👁</button>
-          ${r.status==='pending' ? `
-            <button class="btn-accept" onclick="handleReturn('${r.id}','approved')">✓ Approve</button>
-            <button class="btn-decline" onclick="handleReturn('${r.id}','rejected')">✕ Reject</button>
-          ` : ''}
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function viewReturn(id) {
-  const r = returns.find(x=>x.id===id);
-  currentReturnId = id;
-  document.getElementById('returnDetailGrid').innerHTML = [
-    ['Customer',r.customer],['Order',r.order],['Item',r.item],['Amount','₹'+r.amount]
-  ].map(([k,v])=>`
-    <div class="detail-box">
-      <div class="detail-key">${k}</div>
-      <div class="detail-val">${v}</div>
+    <div class="sec-head">
+      <div><div class="sec-title">Permissions Editor</div><div class="sec-sub">Toggle what each role can see and do — Owner is always full access</div></div>
+      <button class="btn btn-primary" onclick="savePerms()">Save Permissions</button>
     </div>
-  `).join('');
-  document.getElementById('returnReason').textContent = r.reason;
-  document.getElementById('returnProof').textContent = r.proof + ' · ' + r.date;
-  document.getElementById('returnActions').innerHTML = r.status==='pending' ? `
-    <button class="btn-accept" style="flex:1;padding:10px;justify-content:center" onclick="handleReturn('${id}','approved');closeModal('returnModal')">✓ Approve Return & Refund</button>
-    <button class="btn-decline" style="flex:1;padding:10px;justify-content:center" onclick="handleReturn('${id}','rejected');closeModal('returnModal')">✕ Reject Return</button>
-  ` : `<div style="color:#475569;font-size:13px">This return has been ${r.status}.</div>`;
-  openModal('returnModal');
-}
+    <div class="card card-p" style="margin-bottom:24px;overflow-x:auto">
+      <table style="min-width:500px">
+        <thead>
+          <tr>
+            <th style="width:220px">Permission</th>
+            <th style="text-align:center;color:${COLORS.staff}">Staff</th>
+            <th style="text-align:center;color:${COLORS.admin}">Admin</th>
+            <th style="text-align:center;color:${COLORS.owner}">Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${PERM_ROWS.map(group=>`
+            <tr><td colspan="4" style="padding:14px 16px 6px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--surface2)">${group.group}</td></tr>
+            ${group.items.map(item=>`
+              <tr>
+                <td style="color:var(--text2);font-size:13px">${item.label}</td>
+                <td style="text-align:center">${mkToggle(S.permissions.staff[item.key],`togglePerm('staff','${item.key}')`)}</td>
+                <td style="text-align:center">${mkToggle(S.permissions.admin[item.key],`togglePerm('admin','${item.key}')`)}</td>
+                <td style="text-align:center">
+                  <div style="display:flex;justify-content:center">
+                    <div style="width:40px;height:22px;border-radius:11px;background:${COLORS.owner};display:flex;align-items:center;padding:3px;opacity:0.6;cursor:not-allowed">
+                      <div style="width:16px;height:16px;background:#fff;border-radius:50%;transform:translateX(18px)"></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>`).join('')}
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
 
-function handleReturn(id, status) {
-  returns = returns.map(r => r.id===id ? {...r,status} : r);
-  initDashboard();
-  renderReturns();
-  showToast(`Return ${id} ${status} ✅`);
-}
-
-// ── PRODUCTS ──────────────────────────────────────────────────────────────
-function renderProducts() {
-  document.getElementById('productCount').textContent = `${products.length} total products`;
-  document.getElementById('productsBody').innerHTML = products.map(p=>`
-    <tr>
-      <td><span class="td-name">${p.name}</span></td>
-      <td>${p.brand}</td>
-      <td>${p.category}</td>
-      <td><span style="color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace">₹${p.price.toLocaleString('en-IN')}</span></td>
-      <td><span style="color:#6366F1;font-weight:700">${p.discount}%</span></td>
-      <td><span style="color:${p.stock===0?'#F43F5E':p.stock<5?'#F59E0B':'#10B981'};font-weight:700">${p.stock}</span></td>
-      <td>${badge(p.status)}</td>
-      <td>
-        <div class="actions">
-          <button class="btn-icon btn-danger" onclick="deleteProduct(${p.id})">🗑</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function addProduct() {
-  const name=document.getElementById('pName').value;
-  const brand=document.getElementById('pBrand').value;
-  const category=document.getElementById('pCategory').value;
-  const price=+document.getElementById('pPrice').value;
-  const discount=+document.getElementById('pDiscount').value||0;
-  const stock=+document.getElementById('pStock').value||0;
-  if(!name||!price){showToast('Name and price are required!');return;}
-  const status = stock===0?'out_of_stock':stock<5?'low_stock':'active';
-  products.unshift({id:Date.now(),name,brand,category,price,discount,stock,status});
-  closeModal('addProductModal');
-  renderProducts();
-  ['pName','pBrand','pCategory','pPrice','pDiscount','pStock','pDesc'].forEach(id=>document.getElementById(id).value='');
-  showToast('Product added! ✅');
-}
-
-function deleteProduct(id) {
-  if(!confirm('Remove this product?')) return;
-  products = products.filter(p=>p.id!==id);
-  renderProducts();
-  showToast('Product removed.');
-}
-
-// ── COUPONS ───────────────────────────────────────────────────────────────
-function renderCoupons() {
-  document.getElementById('couponCount').textContent = `${coupons.filter(c=>c.active).length} active`;
-  document.getElementById('couponGrid').innerHTML = coupons.map(c=>`
-    <div class="coupon-card" style="opacity:${c.active?1:0.5}">
-      <div class="toggle-wrap">
-        <button class="toggle" style="background:${c.active?'#3B82F6':'#1e2d4a'}" onclick="toggleCoupon(${c.id})">
-          <div class="toggle-dot" style="transform:translateX(${c.active?16:0}px)"></div>
-        </button>
-      </div>
-      <div class="coupon-code">${c.code}</div>
-      <div class="coupon-val">${c.type==='flat'?'₹'+c.value+' OFF':c.value+'% OFF'}</div>
-      <div class="coupon-meta">Min order: ₹${c.min} · Used: ${c.used}${c.max?'/'+c.max:''} times</div>
-      <div class="coupon-progress">
-        <div class="coupon-bar" style="width:${c.max?Math.min((c.used/c.max)*100,100):30}%"></div>
+    <div class="card card-p" style="border-color:${COLORS.accent}20">
+      <div class="sec-title" style="margin-bottom:8px">How to Manage Passwords</div>
+      <div class="info-box" style="margin-bottom:0">
+        All keys stored in <strong style="color:${COLORS.accent}">Railway → Variables</strong>.<br/>
+        Change password: Edit the variable value → save → active in 30 seconds.<br/>
+        Remove someone: Delete their KEY_1 and KEY_2 → instant access revoked.<br/>
+        Add second staff: Use STAFF2_KEY_1 and STAFF2_KEY_2 as variable names.<br/>
+        Variable names: <span style="font-family:'JetBrains Mono',monospace;color:${COLORS.accent}">OWNER_KEY_1, OWNER_KEY_2, ADMIN_KEY_1, ADMIN_KEY_2, STAFF_KEY_1, STAFF_KEY_2</span>
       </div>
     </div>
-  `).join('');
+  `;
 }
 
-function toggleCoupon(id) {
-  coupons = coupons.map(c=>c.id===id?{...c,active:!c.active}:c);
-  renderCoupons();
-  document.getElementById('couponCount').textContent = `${coupons.filter(c=>c.active).length} active`;
+function togglePerm(role,key){
+  if(role==='owner'){toast('Owner permissions cannot be changed','error');return;}
+  S.permissions[role][key]=!S.permissions[role][key];
+  addAudit(`Permission "${key}" for ${role} ${S.permissions[role][key]?'enabled':'disabled'}`);
+  rRoles();toast(`${role} → ${key} ${S.permissions[role][key]?'enabled':'disabled'}`);
+}
+function savePerms(){addAudit('Permissions saved');toast('Permissions saved');}
+
+function addRoleMember(){
+  const name=document.getElementById('rmName').value;const key1=document.getElementById('rmKey1').value;const key2=document.getElementById('rmKey2').value;
+  if(!name||!key1||!key2){toast('All fields required','error');return;}
+  S.roleMembers.push({id:Date.now(),name,role:document.getElementById('rmRole').value,key1,key2,added:'Now'});
+  closeModal('modal-role');addAudit(`New member "${name}" added`);rRoles();toast(`${name} added`);
+}
+function removeRole(id){
+  const m=S.roleMembers.find(x=>x.id===id);if(!confirm(`Remove ${m.name}?`))return;
+  S.roleMembers=S.roleMembers.filter(x=>x.id!==id);addAudit(`Member "${m.name}" removed`);rRoles();toast(`${m.name} removed`,'warn');
 }
 
-function addCoupon() {
-  const code=document.getElementById('cCode').value.toUpperCase();
-  const type=document.getElementById('cType').value;
-  const value=+document.getElementById('cValue').value;
-  const min=+document.getElementById('cMin').value||0;
-  const max=+document.getElementById('cMax').value||null;
-  if(!code||!value){showToast('Code and value are required!');return;}
-  coupons.unshift({id:Date.now(),code,type,value,min,max,used:0,active:true});
-  closeModal('addCouponModal');
-  renderCoupons();
-  ['cCode','cValue','cMin','cMax'].forEach(id=>document.getElementById(id).value='');
-  showToast('Coupon created! 🎉');
-}
-
-// ── NOTIFICATIONS ─────────────────────────────────────────────────────────
-const NOTIF_TEMPLATES = [
-  {type:'deal',title:'⚡ Flash Sale — Today Only!',body:'40% OFF on running shoes. Limited stock — grab yours now!'},
-  {type:'new',title:'🔥 New Collection Just Dropped',body:'Check out our latest sports collection — fresh styles for the season!'},
-  {type:'stock',title:'📦 Back in Stock!',body:'Your favourite item is back. Order now before it sells out again!'},
-  {type:'cart',title:'👀 You left something behind',body:'Your cart is waiting! Complete your order and get it delivered fast.'},
-];
-
-function renderNotifTemplates() {
-  document.getElementById('notifTemplates').innerHTML = NOTIF_TEMPLATES.map(t=>`
-    <div style="background:#141c2e;border:1px solid #1e2d4a;border-radius:10px;padding:12px 16px;
-      cursor:pointer;transition:border 0.15s" onclick="useTemplate('${t.type}','${t.title}','${t.body}')"
-      onmouseover="this.style.borderColor='#3B82F6'" onmouseout="this.style.borderColor='#1e2d4a'">
-      <div style="font-size:13px;font-weight:700;color:#e2e8f0;margin-bottom:3px">${t.title}</div>
-      <div style="font-size:12px;color:#475569">${t.body}</div>
+// ── AUDIT LOG ──────────────────────────────────────
+function rAuditLog(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="sec-head">
+      <div><div class="sec-title">Audit Log</div><div class="sec-sub">Every admin action is permanently recorded</div></div>
+      <button class="btn btn-ghost" onclick="S.auditLog=[];rAuditLog();toast('Cleared','warn')">Clear</button>
     </div>
-  `).join('');
+    <div class="card card-p">
+      ${S.auditLog.map(a=>`
+        <div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:${a.color||'#888'};flex-shrink:0;margin-top:5px"></div>
+          <div style="flex:1">
+            <div style="font-size:13px;color:var(--text2)">${a.action}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:3px">
+              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:${a.color||'#888'}15;color:${a.color||'#888'}">${a.role}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">${a.time}</span>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>
+  `;
 }
 
-function useTemplate(type, title, body) {
-  document.getElementById('notifType').value = type;
-  document.getElementById('notifTitle').value = title;
-  document.getElementById('notifBody').value = body;
+// ── SETTINGS ──────────────────────────────────────
+function rSettings(){
+  document.getElementById('pageBody').innerHTML=`
+    <div class="two-col">
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:16px">Store Information</div>
+          ${[['Store Name','storeName'],['Support Email','email'],['Support Phone','phone'],['Address','address']].map(([l,k])=>`
+            <div class="f-row"><label class="f-label">${l}</label><input class="f-input" value="${S.settings[k]}" onchange="S.settings['${k}']=this.value"/></div>`).join('')}
+          <button class="f-submit" onclick="addAudit('Store info updated');toast('Saved')">Save Changes</button>
+        </div>
+        <div class="card card-p">
+          <div class="sec-title" style="margin-bottom:16px">Social Links</div>
+          <div class="f-row"><label class="f-label">Instagram</label><input class="f-input" value="${S.settings.instagram}" onchange="S.settings.instagram=this.value"/></div>
+          <div class="f-row"><label class="f-label">WhatsApp</label><input class="f-input" value="${S.settings.whatsapp}" onchange="S.settings.whatsapp=this.value"/></div>
+          <button class="f-submit" onclick="toast('Saved')">Save</button>
+        </div>
+      </div>
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:4px">Store Controls</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Instant effect — no app update needed</div>
+          <div class="setting-row">
+            <div><div class="setting-label">Maintenance Mode</div><div class="setting-sub">Takes app offline</div></div>
+            ${mkToggle(S.settings.maintenanceMode,`toggleSetting('maintenanceMode')`)}
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Cash on Delivery</div><div class="setting-sub">Allow COD for orders</div></div>
+            ${mkToggle(S.pricing.codEnabled,`S.pricing.codEnabled=!S.pricing.codEnabled;addAudit('COD '+(S.pricing.codEnabled?'enabled':'disabled'));toast('COD '+(S.pricing.codEnabled?'enabled':'disabled'));rSettings()`)}
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Returns</div><div class="setting-sub" style="color:${S.features.returns?COLORS.green:COLORS.red}">${S.features.returns?'Currently accepting returns':'Returns are OFF — users see unavailable message'}</div></div>
+            ${mkToggle(S.features.returns,`S.features.returns=!S.features.returns;addAudit('Returns '+(S.features.returns?'enabled':'disabled'));toast('Returns '+(S.features.returns?'enabled':'disabled'),S.features.returns?'success':'warn');rSettings()`)}
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Guest / Preview Mode</div><div class="setting-sub">Allow browsing without login</div></div>
+            ${mkToggle(S.features.guestMode,`toggleFeature('guestMode');rSettings()`)}
+          </div>
+          <div class="setting-row" style="border-bottom:none">
+            <div><div class="setting-label">Free Delivery Above</div><div class="setting-sub">Currently ${money(S.pricing.freeDeliveryMin)}</div></div>
+            <input class="f-input" style="width:90px;margin:0;padding:8px 12px;text-align:right" type="number" value="${S.pricing.freeDeliveryMin}" onchange="S.pricing.freeDeliveryMin=+this.value;toast('Updated')"/>
+          </div>
+        </div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:4px">Payment — Razorpay</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Update keys in Railway Variables for security</div>
+          <div class="info-box">Go to Railway → sportzone-backend → Variables → update RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET directly.</div>
+          <a href="https://railway.app" target="_blank" class="btn btn-ghost" style="width:100%;justify-content:center">Open Railway Dashboard</a>
+        </div>
+        <div class="card card-p" style="border-color:${COLORS.red}20">
+          <div class="sec-title" style="color:${COLORS.red};margin-bottom:4px">Danger Zone</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Irreversible actions — Owner only</div>
+          <button class="btn btn-danger" style="width:100%" onclick="toast('Contact developer to clear data','error')">Clear All Test Data</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
-
-function prefillNotif() {
-  const t = document.getElementById('notifType').value;
-  const tmpl = NOTIF_TEMPLATES.find(x=>x.type===t);
-  if(tmpl) useTemplate(tmpl.type, tmpl.title, tmpl.body);
-}
-
-function sendNotif() {
-  const title = document.getElementById('notifTitle').value;
-  const body = document.getElementById('notifBody').value;
-  const target = document.getElementById('notifTarget').value;
-  if(!title||!body){showToast('Title and message required!');return;}
-  showToast(`🔔 Notification sent to ${target==='all'?'all users':target}!`);
-  document.getElementById('notifTitle').value='';
-  document.getElementById('notifBody').value='';
-}
-
-// ── MODAL ─────────────────────────────────────────────────────────────────
-function openModal(id) { document.getElementById(id).classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-document.addEventListener('click', e => {
-  if(e.target.classList.contains('modal-overlay')) e.target.classList.remove('show');
-});
-
-// ── TOAST ─────────────────────────────────────────────────────────────────
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 2500);
-}
+function toggleSetting(k){S.settings[k]=!S.settings[k];addAudit(`Setting "${k}" ${S.settings[k]?'on':'off'}`);toast(k==='maintenanceMode'?(S.settings[k]?'Maintenance mode ON':'App is live again'):'Updated');rSettings();}
 </script>
 </body>
 </html>
