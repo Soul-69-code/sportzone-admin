@@ -439,8 +439,11 @@ const ADMIN_KEY='sportzozne_admin_2026';
 async function api(path,method='GET',body=null,isForm=false){
   const headers={'x-admin-key':ADMIN_KEY};
   if(!isForm&&body)headers['Content-Type']='application/json';
+  // Append adminKey to URL for all requests to avoid CORS preflight issues
+  const sep=path.includes('?')?'&':'?';
+  const url=`${API_BASE}${path}${sep}adminKey=${ADMIN_KEY}`;
   try{
-    const res=await fetch(`${API_BASE}${path}`,{
+    const res=await fetch(url,{
       method,headers,
       body:isForm?body:(body?JSON.stringify(body):null)
     });
