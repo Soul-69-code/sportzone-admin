@@ -1353,7 +1353,7 @@ function sendNotifyMe(id){toast('Notification feature coming soon','info');}
 async function loadBrands(){
   try {
     const BASE = 'https://sportzone-backend-production.up.railway.app/api';
-    const r = await fetch(BASE + '/brands');
+    const r = await fetch(BASE + '/products/brands');
     const d = await r.json();
     const sel = document.getElementById('pBrand');
     if(sel && d.brands){
