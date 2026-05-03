@@ -1377,6 +1377,21 @@ async function loadCategoriesForGender(gender){
   } catch(e){ console.warn('loadCategoriesForGender error',e); }
 }
 
+async function deleteProduct(id, name){
+  if(!confirm('Delete "' + name + '"? This cannot be undone.')) return;
+  try {
+    const d = await api('/products/' + id, 'DELETE');
+    if(d.success || d.message){
+      toast('Product deleted!');
+      rProducts();
+    } else {
+      toast(d.message || 'Failed to delete', 'error');
+    }
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
 async function addProduct(){
   const name=document.getElementById('pName').value.trim();
   const price=+document.getElementById('pPrice').value;
@@ -1392,7 +1407,7 @@ async function addProduct(){
     formData.append('gender',document.getElementById('pGender').value||'Unisex');
     formData.append('base_price',price);
     formData.append('discount_percent',document.getElementById('pDisc').value||0);
-    formData.append('stock_quantity',document.getElementById('pStock').value||0);
+    formData.append('stock',document.getElementById('pStock').value||0);
     formData.append('sizes',document.getElementById('pSizes').value||'One Size');
     formData.append('brand_id',document.getElementById('pBrand')?document.getElementById('pBrand').value||'':'');
     formData.append('category_id',document.getElementById('pCat')?document.getElementById('pCat').value||'':'');
