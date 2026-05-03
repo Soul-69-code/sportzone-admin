@@ -437,7 +437,7 @@ const API_BASE='https://sportzone-backend-production.up.railway.app/api';
 const ADMIN_KEY='admin123';
 
 async function api(path,method='GET',body=null,isForm=false){
-  // no custom headers - using query param only
+  const headers={};
   if(!isForm&&body)headers['Content-Type']='application/json';
   // Append adminKey to URL for all requests to avoid CORS preflight issues
   const sep=path.includes('?')?'&':'?';
