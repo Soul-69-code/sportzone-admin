@@ -1339,7 +1339,7 @@ function viewProductDetails(id,name,stock,disc){
 
 async function updateStock(id){
   const newStock=+document.getElementById('newStock').value;
-  const d=await api(`/products/${id}`,'PUT',{stock_quantity:newStock,name:'',description:'',gender:'',base_price:0,discount_percent:0,is_active:true});
+  const d=await api(`/products/${id}`,'PUT',{stock:newStock,is_active:true});
   addAudit(`Product stock updated to ${newStock}`);closeModal('sharedModal');rProducts();toast('Stock updated');
 }
 
