@@ -389,7 +389,7 @@ tr:hover td{background:#0d1520;}
     <div class="f-row"><label class="f-label">Schedule Start</label><input class="f-input" id="bStart" type="datetime-local"/></div>
     <div class="f-row"><label class="f-label">Schedule End</label><input class="f-input" id="bEnd" type="datetime-local"/></div>
   </div>
-  <div class="f-row"><label class="f-label">Background Color</label><input class="f-input" id="bColor" type="color" value="#0d1628"/></div>
+  <div class="f-row"><label class="f-label">Banner Image</label><input type="file" id="bannerImg" accept="image/*" class="f-input"/></div>
   <button class="f-submit" onclick="saveBanner()">Save Banner</button>
 </div></div>
 
@@ -987,87 +987,32 @@ async function rDashboard(){
 }
 
 // ── ANALYTICS ──────────────────────────────────────
-function rAnalytics(){
+async function rAnalytics(){
+  const d = await api('/analytics','GET');
+  const s = d.stats || {};
+  const monthly = d.monthly || [];
   document.getElementById('pageBody').innerHTML=`
     <div class="stat-grid">${[
-      {l:'Total Installs',v:'2,847',c:'+134 this week',col:COLORS.cyan},
-      {l:'Daily Active Users',v:'384',c:'Today',col:COLORS.green},
-      {l:'Products Sold Today',v:'47',c:'+8 vs yesterday',col:COLORS.yellow},
-      {l:'Avg Order Value',v:'₹1,847',c:'+₹120 this week',col:COLORS.accent},
-      {l:'Cart Abandonment',v:'34%',c:'-4% this week',col:COLORS.purple},
-      {l:'Return Rate',v:'2.1%',c:'Industry avg 5%',col:COLORS.green},
-      {l:'New Users Today',v:'28',c:'vs 19 yesterday',col:COLORS.accent2},
-      {l:'Avg Rating',v:'4.3 ★',c:'from 302 reviews',col:COLORS.yellow},
-    ].map(s=>`<div class="stat-card" style="border-color:${s.col}20"><div class="stat-label">${s.l}</div><div class="stat-value" style="color:${s.col};font-size:20px">${s.v}</div><div class="stat-change" style="color:${COLORS.green}">↑ ${s.c}</div></div>`).join('')}</div>
-    <div class="two-col" style="margin-bottom:20px">
-      <div class="chart-wrap"><div class="chart-title">App Installs — 14 Days</div><div class="chart-sub">Daily new installs</div><canvas id="ic" height="160"></canvas></div>
-      <div class="chart-wrap"><div class="chart-title">Products Sold — Daily</div><div class="chart-sub">Units per day</div><canvas id="sc" height="160"></canvas></div>
-    </div>
-    <div class="two-col" style="margin-bottom:20px">
-      <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:16px">Best Selling Products</div>
-        ${[['DryFit Running Tee','Nike',89,'₹71,111'],['Yoga Mat 6mm','Strauss',72,'₹50,328'],['Sports Bra M','Nivia',61,'₹36,539'],['Cricket Bat','SS',48,'₹1,05,552'],['Football Boots','Adidas',34,'₹64,566']].map(([n,b,s,r],i)=>`
-          <div class="metric-row">
-            <div style="display:flex;align-items:center;gap:8px;width:160px">
-              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);width:16px">#${i+1}</span>
-              <div><div style="font-size:12px;font-weight:700;color:var(--text)">${n}</div><div style="font-size:10px;color:var(--text3)">${b}</div></div>
-            </div>
-            <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(s/89*100)}%"></div></div>
-            <div style="text-align:right"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text)">${s}</div><div style="font-size:10px;color:var(--text3)">${r}</div></div>
-          </div>`).join('')}
-      </div>
-      <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:16px">Most Viewed Products</div>
-        ${[['DryFit Running Tee',1240],['Yoga Mat 6mm',987],['Sports Bra M',876],['Cricket Bat',654],['Football Boots',543]].map(([n,v],i)=>`
-          <div class="metric-row">
-            <div style="font-size:12px;font-weight:600;color:var(--text);width:160px">#${i+1} ${n}</div>
-            <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(v/1240*100)}%;background:${COLORS.cyan}"></div></div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:${COLORS.cyan}">${v}</div>
-          </div>`).join('')}
-      </div>
-    </div>
-    <div class="two-col">
-      <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:16px">Top Search Terms</div>
-        ${S.searchTerms.map(s=>`
-          <div class="metric-row">
-            <div style="display:flex;align-items:center;gap:8px;flex:1">
-              <div style="font-size:12px;font-weight:600;color:var(--text);width:140px">${s.term}</div>
-              <span style="font-size:10px;padding:2px 8px;border-radius:6px;background:${s.resultFound?'#0a1f14':'#1f0a10'};color:${s.resultFound?COLORS.green:COLORS.red};font-weight:700">${s.resultFound?'Found':'No Results'}</span>
-            </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text)">${s.count}</div>
-          </div>`).join('')}
-        <div class="info-box" style="margin-top:14px;margin-bottom:0;font-size:11px">
-          "No Results" terms = products you should consider stocking
-        </div>
-      </div>
-      <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:16px">User Growth</div>
-        ${[['Jan 2026',234],['Feb 2026',312],['Mar 2026',489],['Apr 2026',847]].map(([m,u])=>`
-          <div class="metric-row">
-            <div style="font-size:12px;color:var(--text);font-weight:600;width:80px">${m}</div>
-            <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(u/847*100)}%;background:${COLORS.green}"></div></div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${COLORS.green}">${u}</div>
-          </div>`).join('')}
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-          <div class="sec-title" style="font-size:13px;margin-bottom:12px">Login Methods</div>
-          ${[['Email OTP',45],['Phone OTP',32],['Google',18],['Facebook',5]].map(([m,p])=>`
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:12px;color:var(--text2);width:100px">${m}</div>
-              <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px"><div style="height:6px;width:${p}%;background:${COLORS.accent};border-radius:4px"></div></div>
-              <div style="font-size:12px;font-weight:700;color:var(--accent)">${p}%</div>
-            </div>`).join('')}
-        </div>
-      </div>
+      {l:'Total Users',v:s.total_users||0,c:'+'+(s.new_users_week||0)+' this week',col:COLORS.cyan},
+      {l:'Total Orders',v:s.total_orders||0,c:(s.orders_today||0)+' today',col:COLORS.green},
+      {l:'Total Revenue',v:'₹'+(Number(s.total_revenue||0)).toLocaleString('en-IN'),c:'all time',col:COLORS.yellow},
+      {l:'Avg Order Value',v:'₹'+(s.avg_order_value||0),c:'per order',col:COLORS.accent},
+      {l:'Active Products',v:s.total_products||0,c:'in store',col:COLORS.purple},
+      {l:'New Users This Week',v:s.new_users_week||0,c:'registered',col:COLORS.green},
+    ].map(s=>`<div class="stat-card" style="border-color:${s.col}20"><div class="stat-label">${s.l}</div><div class="stat-value" style="color:${s.col};font-size:20px">${s.v}</div><div class="stat-change" style="color:${COLORS.green}">${s.c}</div></div>`).join('')}</div>
+    <div class="card card-p" style="margin-bottom:20px">
+      <div class="sec-title" style="margin-bottom:16px">Monthly Revenue</div>
+      ${monthly.length===0?'<div style="color:var(--text3);text-align:center;padding:20px">No data yet — orders will appear here</div>':monthly.map(m=>`
+        <div class="metric-row">
+          <div style="font-size:12px;font-weight:700;color:var(--text);width:60px">${m.month}</div>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="width:${Math.round(m.revenue/Math.max(...monthly.map(x=>x.revenue))*100)||0}%"></div></div>
+          <div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--text)">₹${Number(m.revenue||0).toLocaleString('en-IN')}</div><div style="font-size:10px;color:var(--text3)">${m.orders} orders</div></div>
+        </div>`).join('')}
     </div>
   `;
-  setTimeout(()=>{
-    drawBar('ic',['11A','12A','13A','14A','15A','16A','17A','18A','19A','20A','21A','22A','23A','24A'],[18,24,31,28,35,22,19,27,34,41,38,45,52,48],COLORS.cyan);
-    drawBar('sc',['18A','19A','20A','21A','22A','23A','24A'],[32,28,39,45,41,53,47],COLORS.yellow);
-  },50);
 }
 
-// ── FINANCE ────────────────────────────────────────
+
 function rFinance(){
   const totalGross=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.amount,0);
   const totalFees=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.fee,0);
@@ -1217,28 +1162,33 @@ async function confirmShip(){
 }
 
 // ── RETURNS ───────────────────────────────────────
-function rReturns(){
-  const isStaff=session.role==='staff';
+async function rReturns(){
+  const d = await api('/returns','GET');
+  const returns = d.returns || [];
   document.getElementById('pageBody').innerHTML=`
-    ${isStaff?`<div class="warn-box">View only — your role cannot approve or reject returns</div>`:''}
-    ${!S.features.returns?`<div class="danger-box">Returns are currently DISABLED. Users see "${S.cms.returnsUnavailableMsg}"</div>`:''}
     <div class="tbl-wrap"><table><thead><tr>
-      <th>Return ID</th><th>Order</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th>
+      <th>Order</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th>Actions</th>
     </tr></thead><tbody>
-      ${S.returns.map(r=>`<tr>
-        <td class="td-mono">${r.id}</td><td class="td-mono">${r.order}</td>
-        <td class="td-main">${r.customer}</td><td>${r.item}</td>
-        <td style="color:var(--text);font-weight:700">${money(r.amount)}</td>
-        <td>${badge(r.status)}</td><td class="td-mono">${r.date}</td>
+      ${returns.length===0?'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No return requests yet</td></tr>':returns.map(r=>`<tr>
+        <td class="td-mono">#${r.order_id}</td>
+        <td class="td-main">${r.customer}</td><td>${r.item||'—'}</td>
+        <td style="color:var(--text);font-weight:700">₹${r.amount||0}</td>
+        <td>${badge(r.status||'pending')}</td>
         <td><div class="td-actions">
-          <button class="btn btn-icon" onclick="viewReturn('${r.id}')">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-          ${r.status==='pending'&&!isStaff?`<button class="btn btn-success btn-sm" onclick="handleReturn('${r.id}','approved')">Approve</button><button class="btn btn-danger btn-sm" onclick="handleReturn('${r.id}','rejected')">Reject</button>`:''}
+          ${r.status==='pending'?`
+            <button class="btn btn-success btn-sm" onclick="handleReturnReal(${r.order_id},'approved')">Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="handleReturnReal(${r.order_id},'rejected')">Reject</button>
+          `:`<span style="font-size:12px;color:var(--text3)">${r.status}</span>`}
         </div></td>
       </tr>`).join('')}
     </tbody></table></div>
   `;
+}
+
+async function handleReturnReal(id,status){
+  await api('/returns/'+id+'/status','PUT',{status});
+  toast(status==='approved'?'Return approved!':'Return rejected','warn');
+  rReturns();
 }
 
 function viewReturn(id){
@@ -1534,31 +1484,21 @@ function addCoupon(){
 }
 
 // ── BANNERS ───────────────────────────────────────
-function rBanners(){
+async function rBanners(){
+  const d = await api('/banners','GET');
+  const banners = d.banners || [];
   document.getElementById('pageBody').innerHTML=`
     <div class="sec-head">
-      <div><div class="sec-title">Banner Manager</div><div class="sec-sub">Changes are instant for all users</div></div>
+      <div><div class="sec-title">Banner Manager</div><div class="sec-sub">${banners.length} banners · Changes are instant for all users</div></div>
       <button class="btn btn-primary" onclick="newBanner()">+ New Banner</button>
     </div>
-    <div class="two-col">${S.banners.map(b=>`
+    <div class="two-col">${banners.length === 0 ? '<div class="card card-p" style="text-align:center;color:var(--text3)">No banners yet. Add one!</div>' : banners.map(b=>`
       <div class="card card-p">
-        <div class="banner-preview" style="background:linear-gradient(120deg,${b.color} 50%,${b.color}cc)">
-          <div style="font-size:9px;font-weight:700;color:${COLORS.accent};letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">${b.tag}</div>
-          <div style="font-size:20px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:4px">${b.title}</div>
-          <div style="font-size:11px;color:#888;margin-bottom:6px">${b.sub}</div>
-          <div style="font-size:16px;font-weight:800;color:#fff">${b.price}</div>
-          <div style="display:inline-block;margin-top:10px;background:#fff;color:#111;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700">${b.cta} →</div>
-        </div>
-        ${b.start?`<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Scheduled: ${b.start} → ${b.end||'No end'}</div>`:''}
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:12px;color:var(--text2);font-weight:600">Active</span>
-            ${mkToggle(b.active,`setActiveBanner(${b.id})`)}
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-ghost btn-sm" onclick="editBanner(${b.id})">Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="delBanner(${b.id})">Delete</button>
-          </div>
+        ${b.image_url ? `<img src="${b.image_url}" style="width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:10px"/>` : ''}
+        <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px">${b.title||'Untitled'}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px">${b.subtitle||''}</div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn btn-danger btn-sm" onclick="delBannerReal(${b.id})">Delete</button>
         </div>
       </div>`).join('')}
     </div>
@@ -1576,15 +1516,29 @@ function editBanner(id){
   openModal('modal-banner');
 }
 function newBanner(){editBannerId=null;document.getElementById('bannerModalTitle').textContent='New Banner';['bTag','bTitle','bSub','bPrice','bCta','bStart','bEnd'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});document.getElementById('bColor').value='#0d1628';openModal('modal-banner');}
-function saveBanner(){
-  const data={tag:document.getElementById('bTag').value,title:document.getElementById('bTitle').value,
-    sub:document.getElementById('bSub').value,price:document.getElementById('bPrice').value,
-    cta:document.getElementById('bCta').value,color:document.getElementById('bColor').value,
-    start:document.getElementById('bStart').value,end:document.getElementById('bEnd').value};
-  if(!data.title){toast('Title required','error');return;}
-  if(editBannerId){S.banners=S.banners.map(b=>b.id===editBannerId?{...b,...data}:b);toast('Banner updated');}
-  else{S.banners.push({id:Date.now(),...data,active:false});toast('Banner created');}
-  addAudit(`Banner "${data.title}" saved`);closeModal('modal-banner');rBanners();
+async function saveBanner(){
+  const title=document.getElementById('bTitle').value;
+  const subtitle=document.getElementById('bSub').value;
+  const imgInput=document.getElementById('pImgFiles');
+  if(!title){toast('Title required','error');return;}
+  const formData=new FormData();
+  formData.append('title',title);
+  formData.append('subtitle',subtitle);
+  formData.append('sort_order',0);
+  const bannerImg=document.getElementById('bannerImg');
+  if(bannerImg&&bannerImg.files&&bannerImg.files[0]){
+    formData.append('image',bannerImg.files[0]);
+  }
+  const d=await api('/banners','POST',formData,true);
+  if(d.success||d.banner){
+    toast('Banner created!');closeModal('modal-banner');rBanners();
+  } else toast(d.message||'Failed','error');
+}
+
+async function delBannerReal(id){
+  if(!confirm('Delete this banner?'))return;
+  await api('/banners/'+id,'DELETE');
+  toast('Banner deleted','warn');rBanners();
 }
 function delBanner(id){
   const b=S.banners.find(x=>x.id===id);
@@ -1877,15 +1831,25 @@ function addBrand(){
 function delBrand(id){S.brands=S.brands.filter(b=>b.id!==id);addAudit('Brand removed');rBrands();toast('Brand removed','warn');}
 
 // ── CUSTOMERS ─────────────────────────────────────
-function rCustomers(){
+async function rCustomers(){
+  const d = await api('/customers','GET');
+  const customers = d.customers || [];
   document.getElementById('pageBody').innerHTML=`
     <div class="sec-head">
-      <div><div class="sec-title">Customers</div><div class="sec-sub">${S.customers.length} registered · ${S.customers.filter(c=>c.blocked).length} blocked</div></div>
-      <input class="f-input" style="margin:0;width:220px;padding:8px 14px" placeholder="Search..." oninput="filterCust(this.value)"/>
+      <div><div class="sec-title">Customers</div><div class="sec-sub">${customers.length} registered</div></div>
     </div>
     <div class="tbl-wrap"><table><thead><tr>
-      <th>Customer</th><th>Email</th><th>Phone</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Status</th><th>Actions</th>
-    </tr></thead><tbody id="custBody">${custRows(S.customers)}</tbody></table></div>
+      <th>Customer</th><th>Email</th><th>Phone</th><th>Orders</th><th>Total Spent</th><th>Joined</th>
+    </tr></thead><tbody>
+      ${customers.length===0?'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No customers yet</td></tr>':customers.map(c=>`<tr>
+        <td><div style="display:flex;align-items:center;gap:10px"><div class="user-avatar">${(c.name||'U').slice(0,2).toUpperCase()}</div><span class="td-main">${c.name||'Unknown'}</span></div></td>
+        <td style="color:var(--text2)">${c.email||'—'}</td>
+        <td class="td-mono">${c.phone||'—'}</td>
+        <td style="font-family:'JetBrains Mono',monospace">${c.orders||0}</td>
+        <td style="font-weight:700">₹${Number(c.spent||0).toLocaleString('en-IN')}</td>
+        <td class="td-mono">${c.joined?new Date(c.joined).toLocaleDateString('en-IN'):'—'}</td>
+      </tr>`).join('')}
+    </tbody></table></div>
   `;
 }
 function custRows(list){
