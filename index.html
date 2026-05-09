@@ -1884,54 +1884,109 @@ function rNotifications(){
     <div class="two-col">
       <div>
         <div class="card card-p" style="margin-bottom:16px">
-          <div class="sec-title" style="margin-bottom:16px">Send Notification</div>
-          <div class="f-row"><label class="f-label">Title</label><input class="f-input" id="nTitle" placeholder="Notification title..."/></div>
-          <div class="f-row"><label class="f-label">Message</label><textarea class="f-textarea" id="nBody" rows="3" placeholder="Notification message..."></textarea></div>
-          <div class="f-row"><label class="f-label">Send To</label>
-            <select class="f-select" id="nTarget">
-              <option value="all">All Users (2,847)</option>
-              <option value="cart">Users with items in cart (~412)</option>
-              <option value="buyers">Previous buyers only (~891)</option>
-              <option value="guests">Guest users only</option>
-            </select>
+          <div class="sec-title" style="margin-bottom:4px">📢 In-App Popup</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">When active, users see this popup every time they open the app until you turn it off.</div>
+          <div class="f-row"><label class="f-label">Popup Title</label><input class="f-input" id="popTitle" placeholder="e.g. Sale is Live! 🎉"/></div>
+          <div class="f-row"><label class="f-label">Popup Message</label><textarea class="f-textarea" id="popMsg" rows="3" placeholder="e.g. Get up to 50% off on all sportswear this weekend only!"></textarea></div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="f-submit" style="flex:1" onclick="savePopup(true)">▶ Save &amp; Activate</button>
+            <button class="f-submit" style="flex:1;background:var(--text3)" onclick="savePopup(false)">Save as Draft</button>
           </div>
-          <div class="f-row"><label class="f-label">Schedule (optional)</label><input class="f-input" id="nSchedule" type="datetime-local"/></div>
-          <button class="f-submit" style="margin-top:4px" onclick="sendNotif()">Send Notification</button>
+        </div>
+        <div class="card card-p">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div class="sec-title" style="margin-bottom:0">All Popups</div>
+            <button onclick="deactivateAllPopups()" style="font-size:11px;padding:5px 10px;background:#fff0f0;color:#E03131;border:1px solid #ffc9c9;border-radius:6px;cursor:pointer">Turn All Off</button>
+          </div>
+          <div id="popupList"><div style="color:var(--text3);font-size:13px">Loading...</div></div>
         </div>
       </div>
       <div>
-        <div class="card card-p" style="margin-bottom:16px">
-          <div class="sec-title" style="margin-bottom:14px">Quick Templates</div>
-          ${NOTIF_TEMPLATES.map(t=>`
-            <div class="notif-template" onclick="document.getElementById('nTitle').value='${t.t}';document.getElementById('nBody').value='${t.b}'">
-              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">${t.t}</div>
-              <div style="font-size:11px;color:var(--text3)">${t.b}</div>
-            </div>`).join('')}
-        </div>
         <div class="card card-p">
-          <div class="sec-title" style="margin-bottom:14px">Recently Sent</div>
-          ${S.notifHistory.map(n=>`
-            <div style="padding:10px 0;border-bottom:1px solid var(--border)">
-              <div style="display:flex;justify-content:space-between">
-                <div><div style="font-size:13px;font-weight:700;color:var(--text)">${n.title}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${n.body}</div></div>
-                <div style="text-align:right;flex-shrink:0;margin-left:12px">
-                  <div style="font-size:11px;font-weight:700;color:${COLORS.green}">${n.sent.toLocaleString()} sent</div>
-                  <div style="font-size:10px;color:var(--text3)">${n.date}</div>
-                </div>
-              </div>
-            </div>`).join('')}
+          <div class="sec-title" style="margin-bottom:10px">💡 How it works</div>
+          <div style="font-size:13px;color:var(--text3);line-height:1.8">
+            <div style="margin-bottom:8px">1️⃣ Type a title and message in the form</div>
+            <div style="margin-bottom:8px">2️⃣ Click <b>Save &amp; Activate</b> — it goes live instantly</div>
+            <div style="margin-bottom:8px">3️⃣ Every user who opens the app will see the popup with a ✕ button</div>
+            <div style="margin-bottom:8px">4️⃣ Click <b>Turn All Off</b> to stop showing it to everyone</div>
+            <div style="margin-bottom:16px">5️⃣ Only <b>one popup</b> can be active at a time</div>
+          </div>
+          <div style="background:#f0f4ff;border-radius:10px;padding:14px">
+            <div style="font-size:12px;font-weight:700;color:#3B5BDB;margin-bottom:6px">🔔 Push Notifications</div>
+            <div style="font-size:12px;color:var(--text3);line-height:1.6">Push notifications (sent to phone even when app is closed) require Firebase setup. Coming soon.</div>
+          </div>
         </div>
       </div>
     </div>
   `;
+  loadPopups();
 }
-function sendNotif(){
-  const title=document.getElementById('nTitle').value;const body=document.getElementById('nBody').value;
-  if(!title||!body){toast('Title and message required','error');return;}
-  const target=document.getElementById('nTarget').value;
-  S.notifHistory.unshift({id:Date.now(),title,body,sent:target==='all'?2847:target==='cart'?412:target==='buyers'?891:234,date:'Now'});
-  document.getElementById('nTitle').value='';document.getElementById('nBody').value='';
-  addAudit(`Notification "${title}" sent`);rNotifications();toast('Notification sent');
+
+async function savePopup(activate){
+  const title=document.getElementById('popTitle').value.trim();
+  const message=document.getElementById('popMsg').value.trim();
+  if(!title||!message){toast('Title and message are required','error');return;}
+  try{
+    const r=await fetch(`${API_BASE}/popups?adminKey=${ADMIN_KEY}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({title,message,is_active:activate})
+    });
+    const d=await r.json();
+    if(d.id){
+      document.getElementById('popTitle').value='';
+      document.getElementById('popMsg').value='';
+      addAudit(`Popup "${title}" ${activate?'activated':'saved as draft'}`);
+      toast(activate?'Popup is now live! 🎉':'Popup saved as draft');
+      loadPopups();
+    } else { toast('Failed to save popup','error'); }
+  } catch(e){ toast('Error: '+e.message,'error'); }
+}
+
+async function loadPopups(){
+  const el=document.getElementById('popupList');
+  if(!el)return;
+  try{
+    const r=await fetch(`${API_BASE}/popups?adminKey=${ADMIN_KEY}`,{headers:{'x-admin-key':ADMIN_KEY}});
+    const popups=await r.json();
+    if(!popups.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px 0">No popups yet. Create one above!</div>';return;}
+    el.innerHTML=popups.map(p=>`
+      <div style="padding:12px;border:1px solid ${p.is_active?'#3B5BDB':'var(--border)'};border-radius:10px;margin-bottom:10px;background:${p.is_active?'#f0f4ff':'#fff'}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="flex:1">
+            ${p.is_active?'<span style="font-size:10px;background:#3B5BDB;color:#fff;padding:2px 7px;border-radius:20px;font-weight:700;margin-bottom:6px;display:inline-block">● LIVE</span>':'<span style="font-size:10px;background:#eee;color:#888;padding:2px 7px;border-radius:20px;font-weight:700;margin-bottom:6px;display:inline-block">DRAFT</span>'}
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">${p.title}</div>
+            <div style="font-size:12px;color:var(--text3);line-height:1.5">${p.message}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            ${!p.is_active?`<button onclick="togglePopup(${p.id})" style="font-size:11px;padding:5px 10px;background:#3B5BDB;color:#fff;border:none;border-radius:6px;cursor:pointer">Activate</button>`:''}
+            <button onclick="deletePopup(${p.id})" style="font-size:11px;padding:5px 10px;background:#fff0f0;color:#E03131;border:1px solid #ffc9c9;border-radius:6px;cursor:pointer">Delete</button>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e){ el.innerHTML='<div style="color:#E03131;font-size:13px">Failed to load popups</div>'; }
+}
+
+async function togglePopup(id){
+  try{
+    await fetch(`${API_BASE}/popups/${id}/toggle?adminKey=${ADMIN_KEY}`,{method:'PATCH',headers:{'x-admin-key':ADMIN_KEY}});
+    addAudit(`Popup #${id} activated`);toast('Popup activated! 🎉');loadPopups();
+  } catch(e){ toast('Error','error'); }
+}
+
+async function deletePopup(id){
+  if(!confirm('Delete this popup?'))return;
+  try{
+    await fetch(`${API_BASE}/popups/${id}?adminKey=${ADMIN_KEY}`,{method:'DELETE',headers:{'x-admin-key':ADMIN_KEY}});
+    addAudit(`Popup #${id} deleted`);toast('Popup deleted');loadPopups();
+  } catch(e){ toast('Error','error'); }
+}
+
+async function deactivateAllPopups(){
+  try{
+    await fetch(`${API_BASE}/popups/deactivate-all?adminKey=${ADMIN_KEY}`,{method:'PATCH',headers:{'x-admin-key':ADMIN_KEY}});
+    addAudit('All popups deactivated');toast('All popups turned off');loadPopups();
+  } catch(e){ toast('Error','error'); }
 }
 
 // ── ROLE MANAGER ──────────────────────────────────
