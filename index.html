@@ -1549,46 +1549,136 @@ function delBanner(id){
 // ── FLASH SALE ────────────────────────────────────
 function rFlash(){
   clearInterval(flashTimer);
-  const active=S.flashSales.find(f=>f.active);
   document.getElementById('pageBody').innerHTML=`
-    ${active?`<div class="flash-active" style="margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-        <div>
-          <div style="font-size:10px;font-weight:700;color:${COLORS.purple};letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Active Flash Sale</div>
-          <div style="font-size:18px;font-weight:800;color:var(--text)">${active.name}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:3px">${active.discount}% OFF · ${active.category} · Ends ${active.end}</div>
+    <div class="two-col">
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:4px">⚡ Flash Sale Settings</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">These settings control what users see on the flash sale banner and screen in the app.</div>
+          <div class="f-row">
+            <label class="f-label">Banner Label</label>
+            <input class="f-input" id="fsLabel" placeholder="e.g. Up to 50% OFF"/>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">This text appears on the flash sale banner on home screen</div>
+          </div>
+          <div class="f-row">
+            <label class="f-label">Sale Ends At</label>
+            <input class="f-input" id="fsEndTime" type="datetime-local"/>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Countdown timer will count down to this time</div>
+          </div>
+          <div class="f-row" style="display:flex;align-items:center;gap:10px">
+            <input type="checkbox" id="fsActive" style="width:16px;height:16px;cursor:pointer"/>
+            <label for="fsActive" style="font-size:13px;font-weight:600;cursor:pointer">Flash Sale is Active (visible in app)</label>
+          </div>
+          <button class="f-submit" style="margin-top:8px" onclick="saveFlashSettings()">💾 Save Flash Sale Settings</button>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="endFlash(${active.id})">End Sale</button>
+        <div class="card card-p">
+          <div class="sec-title" style="margin-bottom:4px">🏷️ How to add products to Flash Sale</div>
+          <div style="font-size:13px;color:var(--text3);line-height:1.8;margin-bottom:12px">
+            Any product with a <b>discount percent greater than 0</b> automatically appears in the Flash Sale screen.
+          </div>
+          <div style="background:#f0f4ff;border-radius:10px;padding:14px;font-size:13px;line-height:1.7">
+            <div style="font-weight:700;color:#3B5BDB;margin-bottom:6px">Steps:</div>
+            <div>1️⃣ Go to <b>Products</b> section</div>
+            <div>2️⃣ Edit any product</div>
+            <div>3️⃣ Set <b>Discount %</b> field to e.g. <b>30</b></div>
+            <div>4️⃣ Save — product instantly appears in Flash Sale</div>
+            <div style="margin-top:8px">Set discount to <b>0</b> to remove from sale.</div>
+          </div>
+        </div>
       </div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Time remaining</div>
-      <div class="flash-countdown" id="flashCd">--:--:--</div>
-    </div>`:`<div class="card card-p" style="margin-bottom:20px;text-align:center;padding:32px;color:var(--text3)">No active flash sale</div>`}
-    <div class="sec-head"><div><div class="sec-title">Flash Sales</div></div><button class="btn btn-primary" onclick="openModal('modal-flash')">+ New Flash Sale</button></div>
-    <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Discount</th><th>Category</th><th>Start</th><th>End</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-      ${S.flashSales.map(f=>`<tr>
-        <td class="td-main">${f.name}</td><td style="color:${COLORS.red};font-weight:700">${f.discount}% OFF</td>
-        <td>${f.category}</td><td class="td-mono">${f.start}</td><td class="td-mono">${f.end}</td>
-        <td>${badge(f.active?'active':'inactive')}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="endFlash(${f.id})">End</button></td>
-      </tr>`).join('')}
-    </tbody></table></div>
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div class="sec-title" style="margin-bottom:0">🔥 Current Sale Products</div>
+            <div id="flashCountBadge" style="font-size:11px;background:#fff0e6;color:#E03131;padding:3px 10px;border-radius:20px;font-weight:700">Loading...</div>
+          </div>
+          <div id="flashProductList"><div style="color:var(--text3);font-size:13px">Loading...</div></div>
+        </div>
+        <div class="card card-p">
+          <div class="sec-title" style="margin-bottom:10px">⏱️ Live Countdown</div>
+          <div class="flash-countdown" id="flashCd" style="font-size:28px;font-weight:800;color:var(--text);letter-spacing:3px">--:--:--</div>
+          <div id="flashEndLabel" style="font-size:12px;color:var(--text3);margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
   `;
-  if(active){
-    flashTimer=setInterval(()=>{
-      const diff=new Date(active.end)-new Date();if(diff<=0){clearInterval(flashTimer);return;}
-      const el=document.getElementById('flashCd');
-      if(el)el.textContent=`${String(Math.floor(diff/3600000)).padStart(2,'0')}:${String(Math.floor(diff%3600000/60000)).padStart(2,'0')}:${String(Math.floor(diff%60000/1000)).padStart(2,'0')}`;
-    },1000);
-  }
+  loadFlashData();
 }
-function endFlash(id){S.flashSales=S.flashSales.map(f=>f.id===id?{...f,active:false}:f);addAudit('Flash sale ended');rFlash();toast('Flash sale ended','warn');}
-function createFlashSale(){
-  const name=document.getElementById('fsName').value;if(!name){toast('Name required','error');return;}
-  S.flashSales.unshift({id:Date.now(),name,discount:+document.getElementById('fsDisc').value||20,
-    category:document.getElementById('fsCat').value||'All',
-    start:document.getElementById('fsStart').value,end:document.getElementById('fsEnd').value,active:true});
-  closeModal('modal-flash');addAudit(`Flash sale "${name}" launched`);rFlash();toast('Flash sale launched');
+
+async function loadFlashData(){
+  try{
+    const r=await fetch(`${API_BASE}/flash-sale?adminKey=${ADMIN_KEY}`);
+    const d=await r.json();
+    if(!d.success) return;
+    const s=d.settings;
+    const products=d.products||[];
+
+    // Fill form
+    if(s){
+      document.getElementById('fsLabel').value=s.label||'';
+      if(s.end_time){
+        const dt=new Date(s.end_time);
+        const local=new Date(dt.getTime()-dt.getTimezoneOffset()*60000).toISOString().slice(0,16);
+        document.getElementById('fsEndTime').value=local;
+      }
+      document.getElementById('fsActive').checked=s.is_active;
+
+      // Countdown
+      if(s.end_time){
+        const end=new Date(s.end_time);
+        document.getElementById('flashEndLabel').textContent='Ends: '+end.toLocaleString();
+        clearInterval(flashTimer);
+        flashTimer=setInterval(()=>{
+          const diff=end-new Date();
+          const el=document.getElementById('flashCd');
+          if(!el){clearInterval(flashTimer);return;}
+          if(diff<=0){el.textContent='ENDED';clearInterval(flashTimer);return;}
+          el.textContent=`${String(Math.floor(diff/3600000)).padStart(2,'0')}:${String(Math.floor(diff%3600000/60000)).padStart(2,'0')}:${String(Math.floor(diff%60000/1000)).padStart(2,'0')}`;
+        },1000);
+      }
+    }
+
+    // Products list
+    const badge=document.getElementById('flashCountBadge');
+    const list=document.getElementById('flashProductList');
+    if(badge) badge.textContent=products.length+' products on sale';
+    if(list){
+      if(!products.length){
+        list.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px 0">No products with discount yet. Go to Products and set a Discount % on any product.</div>';
+      } else {
+        list.innerHTML=products.map(p=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--text)">${p.name||'Unnamed'}</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">₹${p.sale_price||p.base_price||0}</div>
+            </div>
+            <div style="background:#fff0e6;color:#E03131;font-size:12px;font-weight:800;padding:4px 10px;border-radius:20px">${p.discount_percent}% OFF</div>
+          </div>`).join('');
+      }
+    }
+  } catch(e){ console.error(e); }
 }
+
+async function saveFlashSettings(){
+  const label=document.getElementById('fsLabel').value.trim();
+  const end_time=document.getElementById('fsEndTime').value;
+  const is_active=document.getElementById('fsActive').checked;
+  if(!label){toast('Label is required','error');return;}
+  if(!end_time){toast('End time is required','error');return;}
+  try{
+    const r=await fetch(`${API_BASE}/flash-sale/settings?adminKey=${ADMIN_KEY}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({label,end_time:new Date(end_time).toISOString(),is_active})
+    });
+    const d=await r.json();
+    if(d.success){addAudit(`Flash sale settings updated: "${label}"`);toast('Flash sale settings saved! ⚡');loadFlashData();}
+    else toast('Failed to save','error');
+  } catch(e){ toast('Error: '+e.message,'error'); }
+}
+
+function endFlash(id){addAudit('Flash sale ended');toast('Flash sale ended','warn');}
+function createFlashSale(){ toast('Use the settings form above','warn'); }
 
 // ── HOMEPAGE LAYOUT ───────────────────────────────
 function rHomepage(){
