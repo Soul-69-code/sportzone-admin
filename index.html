@@ -1684,54 +1684,119 @@ function createFlashSale(){ toast('Use the settings form above','warn'); }
 function rHomepage(){
   document.getElementById('pageBody').innerHTML=`
     <div class="sec-head">
-      <div><div class="sec-title">Homepage Layout</div><div class="sec-sub">Control what users see — instant effect, no update needed</div></div>
+      <div><div class="sec-title">Homepage Layout</div><div class="sec-sub">All changes save to DB and reflect in app instantly</div></div>
     </div>
     <div class="two-col">
-      <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:6px">Section Visibility</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Toggle sections on/off instantly</div>
-        ${S.homepageLayout.map(item=>`
-          <div class="setting-row">
-            <div><div class="setting-label">${item.label}</div></div>
-            ${mkToggle(item.visible,`toggleSection('${item.id}')`)}
-          </div>`).join('')}
+      <div>
+        <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:6px">Section Visibility</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Toggle sections on/off — saves to DB instantly</div>
+          <div id="sectionToggles"><div style="color:var(--text3);font-size:13px">Loading...</div></div>
+        </div>
+        <div class="card card-p">
+          <div class="sec-title" style="margin-bottom:6px">Feature Toggles</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Enable or disable app features</div>
+          <div id="featureToggles"><div style="color:var(--text3);font-size:13px">Loading...</div></div>
+        </div>
       </div>
       <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:6px">Feature Toggles</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Enable or disable app features instantly</div>
-        ${Object.entries(S.features).map(([k,v])=>`
-          <div class="setting-row">
-            <div>
-              <div class="setting-label" style="text-transform:capitalize;font-size:13px">${k.replace(/([A-Z])/g,' $1')}</div>
-              ${k==='returns'&&!v?`<div style="font-size:10px;color:${COLORS.red};font-weight:600;margin-top:2px">Users see: "${S.cms.returnsUnavailableMsg.slice(0,40)}..."</div>`:''}
-            </div>
-            ${mkToggle(v,`toggleFeature('${k}')`)}
-          </div>`).join('')}
+        <div class="sec-title" style="margin-bottom:6px">Pricing Rules</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Saves to DB on click</div>
+        <div id="pricingForm"><div style="color:var(--text3);font-size:13px">Loading...</div></div>
       </div>
-    </div>
-    <div class="card card-p" style="margin-top:16px">
-      <div class="sec-title" style="margin-bottom:6px">Pricing Rules</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Changes reflect instantly in app</div>
-      <div class="three-col">
-        ${[
-          ['Free Delivery Above (₹)','freeDeliveryMin'],
-          ['Delivery Fee (₹)','deliveryFee'],
-          ['Minimum Order Value (₹)','minOrderValue'],
-          ['COD Charge (₹)','codCharge'],
-          ['Platform Fee (₹)','platformFee'],
-          ['Razorpay Fee %','razorpayFeePercent'],
-        ].map(([l,k])=>`
-          <div>
-            <label class="f-label">${l}</label>
-            <input class="f-input" style="margin:0" type="number" value="${S.pricing[k]}" onchange="S.pricing['${k}']=+this.value"/>
-          </div>`).join('')}
-      </div>
-      <button class="f-submit" style="margin-top:16px;width:auto;padding:10px 24px" onclick="addAudit('Pricing rules updated');toast('Pricing rules saved')">Save Pricing Rules</button>
     </div>
   `;
+  loadHomepageSettings();
 }
-function toggleSection(id){S.homepageLayout=S.homepageLayout.map(s=>s.id===id?{...s,visible:!s.visible}:s);addAudit(`Section "${id}" toggled`);rHomepage();toast('Layout updated');}
-function toggleFeature(k){S.features[k]=!S.features[k];addAudit(`Feature "${k}" ${S.features[k]?'enabled':'disabled'}`);rHomepage();toast(`${k} ${S.features[k]?'enabled':'disabled'}`);}
+
+async function loadHomepageSettings(){
+  try{
+    const r=await fetch(`${API_BASE}/settings?adminKey=${ADMIN_KEY}`);
+    const d=await r.json();
+    if(!d.success) return;
+    const sections=d.settings.homepage_sections||[];
+    const features=d.settings.homepage_features||{};
+    const pricing=d.settings.homepage_pricing||{};
+
+    // Sections
+    const st=document.getElementById('sectionToggles');
+    if(st) st.innerHTML=sections.map(s=>`
+      <div class="setting-row">
+        <div><div class="setting-label">${s.label}</div></div>
+        ${mkToggle(s.visible,`toggleSection('${s.id}')`)}
+      </div>`).join('');
+
+    // Features
+    const ft=document.getElementById('featureToggles');
+    if(ft) ft.innerHTML=Object.entries(features).map(([k,v])=>`
+      <div class="setting-row">
+        <div><div class="setting-label" style="text-transform:capitalize;font-size:13px">${k.replace(/([A-Z])/g,' $1')}</div></div>
+        ${mkToggle(v,`toggleFeature('${k}')`)}
+      </div>`).join('');
+
+    // Pricing
+    const pf=document.getElementById('pricingForm');
+    const pricingFields=[
+      ['Free Delivery Above (₹)','freeDeliveryMin'],
+      ['Delivery Fee (₹)','deliveryFee'],
+      ['Minimum Order Value (₹)','minOrderValue'],
+      ['COD Charge (₹)','codCharge'],
+      ['Platform Fee (₹)','platformFee'],
+      ['Razorpay Fee %','razorpayFeePercent'],
+    ];
+    if(pf) pf.innerHTML=`
+      <div class="three-col">
+        ${pricingFields.map(([l,k])=>`
+          <div>
+            <label class="f-label">${l}</label>
+            <input class="f-input" style="margin:0" type="number" id="pr_${k}" value="${pricing[k]||0}"/>
+          </div>`).join('')}
+      </div>
+      <button class="f-submit" style="margin-top:16px;width:auto;padding:10px 24px" onclick="savePricing()">💾 Save Pricing Rules</button>`;
+
+    // Store in memory for toggle functions
+    window._homepageSections=sections;
+    window._homepageFeatures=features;
+  } catch(e){ console.error(e); }
+}
+
+async function toggleSection(id){
+  const sections=(window._homepageSections||[]).map(s=>s.id===id?{...s,visible:!s.visible}:s);
+  window._homepageSections=sections;
+  try{
+    await fetch(`${API_BASE}/settings?adminKey=${ADMIN_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({key:'homepage_sections',value:sections})
+    });
+    addAudit(`Section "${id}" toggled`);toast('Section updated ✓');loadHomepageSettings();
+  } catch(e){ toast('Error saving','error'); }
+}
+
+async function toggleFeature(k){
+  const features={...(window._homepageFeatures||{})};
+  features[k]=!features[k];
+  window._homepageFeatures=features;
+  try{
+    await fetch(`${API_BASE}/settings?adminKey=${ADMIN_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({key:'homepage_features',value:features})
+    });
+    addAudit(`Feature "${k}" ${features[k]?'enabled':'disabled'}`);toast(`${k} ${features[k]?'enabled':'disabled'} ✓`);loadHomepageSettings();
+  } catch(e){ toast('Error saving','error'); }
+}
+
+async function savePricing(){
+  const fields=['freeDeliveryMin','deliveryFee','minOrderValue','codCharge','platformFee','razorpayFeePercent'];
+  const pricing={};
+  fields.forEach(k=>{ const el=document.getElementById('pr_'+k); if(el) pricing[k]=+el.value; });
+  try{
+    await fetch(`${API_BASE}/settings?adminKey=${ADMIN_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({key:'homepage_pricing',value:pricing})
+    });
+    addAudit('Pricing rules updated');toast('Pricing saved ✓');
+  } catch(e){ toast('Error saving','error'); }
+}
 
 // ── CMS ───────────────────────────────────────────
 function rCMS(){
