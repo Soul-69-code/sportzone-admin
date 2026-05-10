@@ -2313,6 +2313,7 @@ function rAuditLog(){
 
 // ── SETTINGS ──────────────────────────────────────
 function rSettings(){
+  setTimeout(loadForceUpdateSettings, 100);
   document.getElementById('pageBody').innerHTML=`
     <div class="two-col">
       <div>
@@ -2355,6 +2356,11 @@ function rSettings(){
           </div>
         </div>
         <div class="card card-p" style="margin-bottom:16px">
+          <div class="sec-title" style="margin-bottom:4px">🚀 Force Update</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Force users to update the app before they can continue using it.</div>
+          <div id="forceUpdateSection"><div style="color:var(--text3);font-size:13px">Loading...</div></div>
+        </div>
+        <div class="card card-p" style="margin-bottom:16px">
           <div class="sec-title" style="margin-bottom:4px">Payment — Razorpay</div>
           <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Update keys in Railway Variables for security</div>
           <div class="info-box">Go to Railway → sportzone-backend → Variables → update RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET directly.</div>
@@ -2369,6 +2375,61 @@ function rSettings(){
     </div>
   `;
 }
+async function loadForceUpdateSettings(){
+  const el=document.getElementById('forceUpdateSection');
+  if(!el)return;
+  try{
+    const r=await fetch(`${API_BASE}/settings?adminKey=${ADMIN_KEY}`);
+    const d=await r.json();
+    if(!d.success)return;
+    const enabled=d.settings.force_update_enabled==='true'||d.settings.force_update_enabled===true;
+    const minVersion=d.settings.force_update_min_version||'1.0.0';
+    const message=d.settings.force_update_message||'';
+    el.innerHTML=`
+      <div class="setting-row">
+        <div><div class="setting-label">Force Update Active</div><div class="setting-sub" style="color:${enabled?'#E03131':'var(--text3)'">${enabled?'⚠️ Users must update to continue':'Off — users can use any version'}</div></div>
+        ${mkToggle(enabled,`toggleForceUpdate(${!enabled})`)}
+      </div>
+      <div class="f-row" style="margin-top:12px">
+        <label class="f-label">Minimum Required Version</label>
+        <input class="f-input" id="fuVersion" value="${minVersion}" placeholder="e.g. 1.0.1"/>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">Users below this version will be forced to update</div>
+      </div>
+      <div class="f-row">
+        <label class="f-label">Update Message</label>
+        <textarea class="f-textarea" id="fuMessage" rows="2">${message}</textarea>
+      </div>
+      <button class="f-submit" onclick="saveForceUpdate()">💾 Save Force Update Settings</button>
+    `;
+  } catch(e){ console.error(e); }
+}
+
+async function toggleForceUpdate(enable){
+  try{
+    await fetch(`${API_BASE}/settings?adminKey=${ADMIN_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({key:'force_update_enabled',value:String(enable)})
+    });
+    addAudit(`Force update ${enable?'enabled':'disabled'}`);
+    toast(enable?'⚠️ Force update ON — users must update!':'Force update turned off','warn');
+    loadForceUpdateSettings();
+  } catch(e){ toast('Error','error'); }
+}
+
+async function saveForceUpdate(){
+  const version=document.getElementById('fuVersion').value.trim();
+  const message=document.getElementById('fuMessage').value.trim();
+  if(!version){toast('Version required','error');return;}
+  try{
+    await fetch(`${API_BASE}/settings/bulk?adminKey=${ADMIN_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json','x-admin-key':ADMIN_KEY},
+      body:JSON.stringify({settings:{force_update_min_version:version,force_update_message:message}})
+    });
+    addAudit(`Force update settings saved: v${version}`);toast('Force update settings saved ✓');
+    loadForceUpdateSettings();
+  } catch(e){ toast('Error','error'); }
+}
+
 function toggleSetting(k){S.settings[k]=!S.settings[k];addAudit(`Setting "${k}" ${S.settings[k]?'on':'off'}`);toast(k==='maintenanceMode'?(S.settings[k]?'Maintenance mode ON':'App is live again'):'Updated');rSettings();}
 </script>
 </body>
