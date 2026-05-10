@@ -1013,49 +1013,72 @@ async function rAnalytics(){
 }
 
 
-function rFinance(){
-  const totalGross=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.amount,0);
-  const totalFees=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.fee,0);
-  const totalNet=S.transactions.filter(t=>t.status==='success').reduce((s,t)=>s+t.net,0);
-  const totalRefunds=S.refunds.filter(r=>r.status==='issued').reduce((s,r)=>s+r.amount,0);
-  const pendingSettlement=Math.round(totalNet*0.15);
+async function rFinance(){
+  document.getElementById('pageBody').innerHTML=`<div style="padding:40px;text-align:center;color:var(--text3)">Loading finance data...</div>`;
+  try {
+    const [ordersRes, returnsRes] = await Promise.all([
+      fetch(`${API_BASE}/admin/orders?adminKey=${ADMIN_KEY}`),
+      fetch(`${API_BASE}/admin/returns?adminKey=${ADMIN_KEY}`)
+    ]);
+    const ordersData = await ordersRes.json();
+    const returnsData = await returnsRes.json();
+    const orders = ordersData.orders || [];
+    const returns = returnsData.returns || [];
 
-  document.getElementById('pageBody').innerHTML=`
-    <div class="stat-grid">${[
-      {l:'Total Gross Earnings',v:money(totalGross),c:'All payments received',col:COLORS.accent},
-      {l:'Net Earnings (after fees)',v:money(Math.round(totalNet)),c:`Razorpay fee: ${money(Math.round(totalFees))}`,col:COLORS.green},
-      {l:'Pending Settlement',v:money(pendingSettlement),c:'Razorpay T+2 cycle',col:COLORS.yellow},
-      {l:'Total Refunds Issued',v:money(totalRefunds),c:`${S.refunds.filter(r=>r.status==='issued').length} refunds`,col:COLORS.red},
-    ].map(s=>`<div class="stat-card" style="border-color:${s.col}20"><div class="stat-label">${s.l}</div><div class="stat-value" style="color:${s.col};font-size:18px">${s.v}</div><div class="stat-change" style="color:var(--text3)">${s.c}</div></div>`).join('')}</div>
+    const paidOrders = orders.filter(o => ['paid','delivered','shipped','confirmed'].includes(o.status || o.order_status));
+    const totalGross = paidOrders.reduce((s,o) => s + Number(o.total||0), 0);
+    const totalFees = Math.round(totalGross * 0.02);
+    const totalNet = totalGross - totalFees;
+    const totalRefunds = returns.filter(r => r.status === 'approved').reduce((s,r) => s + Number(r.amount||0), 0);
 
-    <div class="sec-head"><div><div class="sec-title">Transaction Log</div><div class="sec-sub">All payment transactions</div></div></div>
-    <div class="tbl-wrap"><table><thead><tr>
-      <th>Razorpay ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Fee (2.36%)</th><th>Net</th><th>Method</th><th>Status</th><th>Date</th>
-    </tr></thead><tbody>
-      ${S.transactions.map(t=>`<tr>
-        <td class="td-mono">${t.id}</td><td class="td-mono">${t.order}</td>
-        <td class="td-main">${t.customer}</td>
-        <td style="font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace">${money(t.amount)}</td>
-        <td style="font-family:'JetBrains Mono',monospace;color:${COLORS.red}">${t.fee>0?money(t.fee):'—'}</td>
-        <td style="font-family:'JetBrains Mono',monospace;color:${COLORS.green}">${t.net>0?money(Math.round(t.net)):'—'}</td>
-        <td>${t.method}</td><td>${badge(t.status)}</td><td class="td-mono">${t.date}</td>
-      </tr>`).join('')}
-    </tbody></table></div>
+    document.getElementById('pageBody').innerHTML=`
+      <div class="stat-grid">${[
+        {l:'Total Gross Earnings',v:money(totalGross),c:'All paid orders',col:COLORS.accent},
+        {l:'Net Earnings (after 2% fee)',v:money(totalNet),c:`Est. Razorpay fee: ${money(totalFees)}`,col:COLORS.green},
+        {l:'Total Orders',v:paidOrders.length,c:'Paid/confirmed orders',col:COLORS.yellow},
+        {l:'Total Refunds',v:money(totalRefunds),c:`${returns.filter(r=>r.status==='approved').length} approved returns`,col:COLORS.red},
+      ].map(s=>`<div class="stat-card" style="border-color:${s.col}20"><div class="stat-label">${s.l}</div><div class="stat-value" style="color:${s.col};font-size:18px">${s.v}</div><div class="stat-change" style="color:var(--text3)">${s.c}</div></div>`).join('')}</div>
 
-    <div class="sec-head"><div><div class="sec-title">Refund Log</div></div></div>
-    <div class="tbl-wrap"><table><thead><tr>
-      <th>Refund ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Razorpay Refund ID</th><th>Status</th><th>Date</th>
-    </tr></thead><tbody>
-      ${S.refunds.map(r=>`<tr>
-        <td class="td-mono">${r.id}</td><td class="td-mono">${r.order}</td>
-        <td class="td-main">${r.customer}</td>
-        <td style="font-weight:700;color:${COLORS.red};font-family:'JetBrains Mono',monospace">${money(r.amount)}</td>
-        <td>${r.reason}</td><td class="td-mono">${r.razorpayId}</td>
-        <td>${badge(r.status)}</td><td class="td-mono">${r.date}</td>
-      </tr>`).join('')}
-    </tbody></table></div>
-    <div class="info-box">Razorpay settles every T+2 business days. Refunds take 5-7 days. Track on <a href="https://dashboard.razorpay.com" target="_blank" style="color:var(--accent)">Razorpay Dashboard</a>.</div>
-  `;
+      <div class="sec-head"><div><div class="sec-title">Transaction Log</div><div class="sec-sub">Real orders from DB</div></div></div>
+      <div class="tbl-wrap"><table><thead><tr>
+        <th>Order ID</th><th>Customer</th><th>Amount</th><th>Est. Fee (2%)</th><th>Net</th><th>Payment</th><th>Status</th><th>Date</th>
+      </tr></thead><tbody>
+        ${orders.length===0?'<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px">No orders yet</td></tr>':orders.map(o=>{
+          const amt=Number(o.total||0);
+          const fee=Math.round(amt*0.02);
+          const net=amt-fee;
+          const status=o.order_status||o.status||'pending';
+          return `<tr>
+            <td class="td-mono">#SC-${String(o.id).padStart(5,'0')}</td>
+            <td class="td-main">${o.customer_name||o.user_name||'—'}</td>
+            <td style="font-weight:700;font-family:'JetBrains Mono',monospace">${money(amt)}</td>
+            <td style="font-family:'JetBrains Mono',monospace;color:${COLORS.red}">${fee>0?money(fee):'—'}</td>
+            <td style="font-family:'JetBrains Mono',monospace;color:${COLORS.green}">${net>0?money(net):'—'}</td>
+            <td>${o.payment_method||'—'}</td>
+            <td>${badge(status)}</td>
+            <td class="td-mono">${o.created_at?new Date(o.created_at).toLocaleDateString('en-IN'):'—'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody></table></div>
+
+      <div class="sec-head"><div><div class="sec-title">Returns & Refunds</div></div></div>
+      <div class="tbl-wrap"><table><thead><tr>
+        <th>Order ID</th><th>Customer</th><th>Reason</th><th>Amount</th><th>Status</th><th>Date</th>
+      </tr></thead><tbody>
+        ${returns.length===0?'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No returns yet</td></tr>':returns.map(r=>`<tr>
+          <td class="td-mono">#SC-${String(r.order_id||r.id).padStart(5,'0')}</td>
+          <td class="td-main">${r.customer_name||r.user_name||'—'}</td>
+          <td>${r.return_reason||r.reason||'—'}</td>
+          <td style="font-weight:700;color:${COLORS.red}">${money(Number(r.amount||r.total||0))}</td>
+          <td>${badge(r.return_status||r.status||'pending')}</td>
+          <td class="td-mono">${r.created_at?new Date(r.created_at).toLocaleDateString('en-IN'):'—'}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <div class="info-box">Finance data pulled live from DB. Razorpay fees estimated at 2%. Connect Razorpay for exact settlement data.</div>
+    `;
+  } catch(e) {
+    document.getElementById('pageBody').innerHTML=`<div style="padding:40px;text-align:center;color:${COLORS.red}">Failed to load finance data: ${e.message}</div>`;
+  }
 }
 
 // ── REPORTS ────────────────────────────────────────
