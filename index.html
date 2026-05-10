@@ -347,11 +347,11 @@ tr:hover td{background:#0d1520;}
   <div class="f-row"><label class="f-label">Description</label><textarea class="f-textarea" id="pDesc" rows="2" placeholder="Short description..."></textarea></div>
   <div class="f-row"><label class="f-label">Size Guide Image URL</label><input class="f-input" id="pSizeGuide" placeholder="https://... (optional)"/></div>
   <div class="f-row">
-    <label class="f-label">Product Images (up to 4 photos)</label>
+    <label class="f-label">Product Images (up to 5 photos)</label>
     <div style="background:var(--surface2);border:2px dashed var(--border2);border-radius:12px;padding:20px;text-align:center;cursor:pointer;margin-bottom:8px" onclick="document.getElementById('pImgFiles').click()">
       <div style="font-size:28px;margin-bottom:6px">📷</div>
       <div style="font-size:13px;font-weight:700;color:var(--text2)">Tap to select product photos</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:3px">JPG, PNG, WebP · Max 5MB each · Up to 4 images</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px">JPG, PNG, WebP · Max 5MB each · Up to 5 images</div>
     </div>
     <input type="file" id="pImgFiles" accept="image/*" multiple style="display:none" onchange="previewImages(this)"/>
     <div id="imgPreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
@@ -799,7 +799,7 @@ function previewImages(input){
   const preview=document.getElementById('imgPreview');
   if(!preview)return;
   preview.innerHTML='';
-  Array.from(input.files).slice(0,4).forEach((file,i)=>{
+  Array.from(input.files).slice(0,5).forEach((file,i)=>{
     const reader=new FileReader();
     reader.onload=e=>{
       preview.innerHTML+=`<div style="position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
