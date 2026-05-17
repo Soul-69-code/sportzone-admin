@@ -1197,7 +1197,7 @@ async function confirmShip(){
 
 // ── RETURNS ───────────────────────────────────────
 async function rReturns(){
-  const d = await api('/returns','GET');
+  const d = await api('/admin/returns','GET');
   const returns = d.returns || [];
   document.getElementById('pageBody').innerHTML=`
     <div class="tbl-wrap"><table><thead><tr>
@@ -1220,7 +1220,7 @@ async function rReturns(){
 }
 
 async function handleReturnReal(id,status){
-  await api('/returns/'+id+'/status','PUT',{status});
+  await api('/admin/returns/'+id+'/status','PUT',{status});
   toast(status==='approved'?'Return approved!':'Return rejected','warn');
   rReturns();
 }
@@ -2046,7 +2046,7 @@ function delBrand(id){S.brands=S.brands.filter(b=>b.id!==id);addAudit('Brand rem
 
 // ── CUSTOMERS ─────────────────────────────────────
 async function rCustomers(){
-  const d = await api('/customers','GET');
+  const d = await api('/admin/customers','GET');
   const customers = d.customers || [];
   document.getElementById('pageBody').innerHTML=`
     <div class="sec-head">
