@@ -811,7 +811,8 @@ function previewImages(input){
   });
 }
 
-function addAudit(action,role,color){
+async function addAudit(action,role,color){
+  api('/admin/audit','POST',{action,role:role||session.role||'system',color:color||ROLES[session.role]?.color||'#888'}).catch(()=>{});
   const now=new Date();
   S.auditLog.unshift({id:Date.now(),action,
     role:role||session.role||'—',
@@ -2353,7 +2354,13 @@ function removeRole(id){
 }
 
 // ── AUDIT LOG ──────────────────────────────────────
-function rAuditLog(){
+async function loadAuditLog(){
+  const d = await api('/admin/audit').catch(()=>null);
+  if(d&&d.success) S.auditLog = d.logs.map(l=>({action:l.action,role:l.role,color:l.color,ts:new Date(l.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),date:new Date(l.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}));
+}
+
+async function rAuditLog(){
+  await loadAuditLog();
   document.getElementById('pageBody').innerHTML=`
     <div class="sec-head">
       <div><div class="sec-title">Audit Log</div><div class="sec-sub">Every admin action is permanently recorded</div></div>
