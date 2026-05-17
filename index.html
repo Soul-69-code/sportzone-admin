@@ -464,9 +464,9 @@ async function sha256(msg){
 }
 
 const PERMS={
-  owner:['dashboard','analytics','finance','reports','orders','returns','products','coupons','banners','flashsale','homepage','cms','categories','brands','customers','notifications','roles','auditlog','settings'],
-  admin:['dashboard','analytics','reports','orders','returns','products','coupons','banners','flashsale','categories','brands','customers','notifications'],
-  staff:['dashboard','analytics','orders','returns','products','coupons'],
+  owner:['dashboard','analytics','finance','reports','orders','returns','products','banners','flashsale','homepage','cms','categories','brands','customers','notifications','roles','auditlog','settings'],
+  admin:['dashboard','analytics','reports','orders','returns','products','banners','flashsale','categories','brands','customers','notifications'],
+  staff:['dashboard','analytics','orders','returns','products'],
 };
 
 // ── SECURITY ──────────────────────────────────────
@@ -847,7 +847,7 @@ const NAV=[
   {id:'returns',label:'Returns',group:'Commerce',badge:'returns',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>'},
   {id:'products',label:'Products',group:'Commerce',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>'},
   {id:'reviews',label:'Reviews',group:'Commerce',badge:'reviewsPending',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'},
-  {id:'coupons',label:'Coupons',group:'Commerce',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'},
+  {id:label:'Coupons',group:'Commerce',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'},
   {id:'banners',label:'Banners',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'},
   {id:'flashsale',label:'Flash Sale',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'},
   {id:'homepage',label:'Homepage Layout',group:'Store',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>'},
@@ -889,7 +889,7 @@ function navTo(page){
 }
 
 const PT={dashboard:'Dashboard',analytics:'Analytics',finance:'Finance & Transactions',reports:'Reports',
-  orders:'Orders',returns:'Returns & Refunds',products:'Products',reviews:'Product Reviews',coupons:'Coupons',
+  orders:'Orders',returns:'Returns & Refunds',products:'Products',reviews:'Product Reviews',
   banners:'Banner Manager',flashsale:'Flash Sale',homepage:'Homepage Layout',cms:'Content Manager',
   categories:'Categories',brands:'Brands',customers:'Customers',notifications:'Notifications',
   roles:'Role Manager',auditlog:'Audit Log',settings:'Settings'};
@@ -898,7 +898,7 @@ function renderPage(page){
   document.getElementById('pageTitle').textContent=PT[page]||page;
   document.getElementById('pageSub').textContent='Sanjay Collection · '+ROLES[session.role]?.label;
   const R={dashboard:rDashboard,analytics:rAnalytics,finance:rFinance,reports:rReports,
-    orders:rOrders,returns:rReturns,products:rProducts,reviews:rReviews,coupons:rCoupons,
+    orders:rOrders,returns:rReturns,products:rProducts,reviews:rReviews,
     banners:rBanners,flashsale:rFlash,homepage:rHomepage,cms:rCMS,
     categories:rCategories,brands:rBrands,customers:rCustomers,notifications:rNotifications,
     roles:rRoles,auditlog:rAuditLog,settings:rSettings};
@@ -2242,7 +2242,7 @@ function rRoles(){
       {key:'cms',label:'Content Manager'},
       {key:'categories',label:'Categories'},
       {key:'brands',label:'Brands'},
-      {key:'coupons',label:'Coupons'},
+      {key:label:'Coupons'},
       {key:'auditlog',label:'Audit Log'},
       {key:'settings',label:'Settings'},
     ]},
