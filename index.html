@@ -1082,7 +1082,18 @@ async function rFinance(){
 }
 
 // ── REPORTS ────────────────────────────────────────
-function rReports(){
+async function rReports(){
+  document.getElementById('pageBody').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;padding:60px;flex-direction:column;gap:10px"><div style="width:24px;height:24px;border:3px solid #1e2d47;border-top:3px solid #4f7cff;border-radius:50%;animation:spin 0.8s linear infinite"></div><div style="font-size:12px;color:var(--text3)">Loading reports...</div></div>`;
+  const d = await api('/admin/reports');
+  if(!d.success){ document.getElementById('pageBody').innerHTML=`<div class="warn-box">Failed to load reports</div>`; return; }
+
+  const months = d.monthly.map(r=>r.month);
+  const revenues = d.monthly.map(r=>Math.round(r.revenue||0));
+  const orders = d.monthly.map(r=>parseInt(r.orders||0));
+  const totals = d.totals || {};
+  const refunds = d.refunds || {};
+  const topProducts = d.topProducts || [];
+
   document.getElementById('pageBody').innerHTML=`
     <div class="two-col" style="margin-bottom:20px">
       <div class="chart-wrap"><div class="chart-title">Monthly Revenue</div><div class="chart-sub">₹ earned per month</div><canvas id="mr" height="160"></canvas></div>
@@ -1090,47 +1101,46 @@ function rReports(){
     </div>
     <div class="two-col" style="margin-bottom:20px">
       <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:14px">Product Performance</div>
+        <div class="sec-title" style="margin-bottom:14px">Overall Stats</div>
         ${[
-          {n:'DryFit Running Tee',views:1240,cart:312,sold:89,conv:'28.5%',rev:'₹71,111'},
-          {n:'Yoga Mat 6mm',views:987,cart:241,sold:72,conv:'29.9%',rev:'₹50,328'},
-          {n:'Sports Bra M',views:876,cart:198,sold:61,conv:'30.8%',rev:'₹36,539'},
-          {n:'Cricket Bat',views:654,cart:124,sold:48,conv:'38.7%',rev:'₹1,05,552'},
-          {n:'Football Boots',views:543,cart:98,sold:34,conv:'34.7%',rev:'₹64,566'},
-        ].map(p=>`
-          <div class="metric-row" style="gap:0">
-            <div style="min-width:130px"><div style="font-size:12px;font-weight:700;color:var(--text)">${p.n}</div></div>
-            <div style="display:flex;gap:12px;flex:1;justify-content:flex-end">
-              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Views</div><div style="font-size:11px;font-weight:700;color:var(--text)">${p.views}</div></div>
-              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Cart</div><div style="font-size:11px;font-weight:700;color:${COLORS.yellow}">${p.cart}</div></div>
-              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Sold</div><div style="font-size:11px;font-weight:700;color:${COLORS.green}">${p.sold}</div></div>
-              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Conv.</div><div style="font-size:11px;font-weight:700;color:${COLORS.accent}">${p.conv}</div></div>
-              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Rev.</div><div style="font-size:11px;font-weight:700;color:var(--text)">${p.rev}</div></div>
-            </div>
-          </div>`).join('')}
-      </div>
-      <div class="card card-p">
-        <div class="sec-title" style="margin-bottom:14px">Refund Report</div>
-        ${[['Total Refunds Issued','3','₹5,397'],['Pending Refunds','1','₹2,499'],['Avg Refund Amount','—','₹1,799'],['Top Reason','Wrong size','—'],['Refund Rate','2.1%','of orders']].map(([l,v,s])=>`
+          ['Total Orders', parseInt(totals.total_orders||0), ''],
+          ['Total Revenue', money(totals.total_revenue||0), ''],
+          ['Avg Order Value', money(totals.avg_order||0), ''],
+        ].map(([l,v,s])=>`
           <div class="metric-row">
             <div style="font-size:13px;color:var(--text2)">${l}</div>
             <div style="text-align:right"><div style="font-weight:700;color:var(--text)">${v}</div><div style="font-size:10px;color:var(--text3)">${s}</div></div>
           </div>`).join('')}
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Refunds by Reason</div>
-          ${[['Wrong size',40],['Defective',35],['Not as described',25]].map(([r,p])=>`
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-              <div style="font-size:11px;color:var(--text2);width:110px">${r}</div>
-              <div style="flex:1;background:var(--surface2);border-radius:4px;height:5px"><div style="height:5px;width:${p}%;background:${COLORS.red};border-radius:4px"></div></div>
-              <div style="font-size:11px;font-weight:700;color:${COLORS.red}">${p}%</div>
+        <div style="margin-top:16px">
+          <div class="sec-title" style="margin-bottom:12px">Refund Stats</div>
+          ${[
+            ['Total Refunds', parseInt(refunds.total||0), ''],
+            ['Refund Amount', money(refunds.amount||0), ''],
+          ].map(([l,v,s])=>`
+            <div class="metric-row">
+              <div style="font-size:13px;color:var(--text2)">${l}</div>
+              <div style="text-align:right"><div style="font-weight:700;color:var(--text)">${v}</div></div>
             </div>`).join('')}
         </div>
+      </div>
+      <div class="card card-p">
+        <div class="sec-title" style="margin-bottom:14px">Top Products by Revenue</div>
+        ${topProducts.length===0?'<div style="font-size:13px;color:var(--text3);text-align:center;padding:20px">No sales data yet</div>':topProducts.map(p=>`
+          <div class="metric-row" style="gap:0;margin-bottom:10px">
+            <div style="min-width:120px"><div style="font-size:12px;font-weight:700;color:var(--text)">${p.name}</div></div>
+            <div style="display:flex;gap:12px;flex:1;justify-content:flex-end">
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Sold</div><div style="font-size:11px;font-weight:700;color:${COLORS.green}">${p.sold}</div></div>
+              <div style="text-align:center"><div style="font-size:9px;color:var(--text3)">Revenue</div><div style="font-size:11px;font-weight:700;color:var(--text)">${money(p.revenue)}</div></div>
+            </div>
+          </div>`).join('')}
       </div>
     </div>
   `;
   setTimeout(()=>{
-    drawBar('mr',['Jan','Feb','Mar','Apr'],[48200,72400,91800,72100],COLORS.accent);
-    drawBar('mo',['Jan','Feb','Mar','Apr'],[28,41,62,47],COLORS.purple);
+    if(months.length>0){
+      drawBar('mr',months,revenues,COLORS.accent);
+      drawBar('mo',months,orders,COLORS.purple);
+    }
   },50);
 }
 
