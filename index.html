@@ -2333,7 +2333,13 @@ function togglePerm(role,key){
   addAudit(`Permission "${key}" for ${role} ${S.permissions[role][key]?'enabled':'disabled'}`);
   rRoles();toast(`${role} → ${key} ${S.permissions[role][key]?'enabled':'disabled'}`);
 }
-function savePerms(){addAudit('Permissions saved');toast('Permissions saved');}
+async function savePerms(){
+  const d = await api('/settings','POST',{
+    role_permissions: JSON.stringify(S.permissions)
+  }).catch(()=>null);
+  addAudit('Permissions saved');
+  toast(d&&d.success ? 'Permissions saved to database!' : 'Saved locally only','warn');
+}
 
 function addRoleMember(){
   const name=document.getElementById('rmName').value;const key1=document.getElementById('rmKey1').value;const key2=document.getElementById('rmKey2').value;
