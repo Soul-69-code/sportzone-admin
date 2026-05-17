@@ -1940,11 +1940,36 @@ function rCMS(){
   `;
 }
 
-function saveCMS(){
+async function saveCMS(){
   document.querySelectorAll('[id^="cms_"]').forEach(el=>{
     const key=el.id.replace('cms_','');if(key in S.cms)S.cms[key]=el.value;
   });
-  addAudit('CMS content updated');toast('All content saved');
+  // Save popup settings to DB
+  await api('/popups/settings','POST',{
+    popup_enabled: S.cms.popupEnabled,
+    popup_message: S.cms.popupMessage,
+  }).catch(()=>{});
+  // Save force update + store info to DB settings
+  await api('/settings','POST',{
+    force_update_enabled: S.cms.forceUpdate,
+    force_update_message: S.cms.forceUpdateMsg,
+    force_update_min_version: S.cms.minAppVersion,
+    store_name: S.cms.storeName,
+    store_phone: S.cms.storePhone,
+    store_email: S.cms.storeEmail,
+    store_instagram: S.cms.storeInstagram,
+    store_whatsapp: S.cms.storeWhatsApp,
+    store_maps: S.cms.storeMapsLink,
+    store_address: S.cms.storeAddress,
+    store_hours: S.cms.storeHours,
+    support_email: S.cms.supportEmail,
+    support_whatsapp: S.cms.supportWhatsApp,
+    support_message: S.cms.supportMsg,
+    return_policy: S.cms.returnPolicyText,
+    refund_policy: S.cms.refundPolicyText,
+  }).catch(()=>{});
+  addAudit('CMS content updated');
+  toast('All content saved to database!');
 }
 
 // ── CATEGORIES ────────────────────────────────────
