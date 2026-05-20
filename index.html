@@ -339,6 +339,7 @@ tr:hover td{background:#0d1520;}
   </div>
   <div class="f-grid">
     <div class="f-row"><label class="f-label">Stock</label><input class="f-input" id="pStock" type="number" placeholder="50"/></div>
+    <div class="f-row"><label class="f-label">Weight (grams)</label><input class="f-input" id="pWeight" type="number" placeholder="500" title="Used for delivery charge calculation"/></div>
     <div class="f-row"><label class="f-label">Gender</label>
       <select class="f-select" id="pGender" onchange="loadCategoriesForGender(this.value)"><option value="men">Men</option><option value="women">Women</option><option value="kids">Kids</option></select>
     </div>
@@ -1395,6 +1396,7 @@ async function addProduct(){
     formData.append('brand_id',document.getElementById('pBrand')?document.getElementById('pBrand').value||'':'');
     formData.append('category_id',document.getElementById('pCat')?document.getElementById('pCat').value||'':'');
     formData.append('gender',document.getElementById('pGender').value||'men');
+    formData.append('weight_grams',document.getElementById('pWeight')?document.getElementById('pWeight').value||500:500);
 
     const imgInput=document.getElementById('pImgFiles');
     if(imgInput&&imgInput.files&&imgInput.files.length>0){
@@ -1408,7 +1410,7 @@ async function addProduct(){
 
     if(d.success||d.product){
       closeModal('modal-product');
-      ['pName','pPrice','pDisc','pStock','pSizes','pDesc'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+      ['pName','pPrice','pDisc','pStock','pSizes','pDesc','pWeight'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
       if(document.getElementById('pImgFiles'))document.getElementById('pImgFiles').value='';
       if(document.getElementById('imgPreview'))document.getElementById('imgPreview').innerHTML='';
       addAudit('Product "'+name+'" added');
