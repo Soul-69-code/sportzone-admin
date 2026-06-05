@@ -829,7 +829,15 @@ function canDo(action){
 }
 
 // ── INIT ──────────────────────────────────────────
-function initApp(){
+async function initApp(){
+  // Load saved permissions from DB
+  try {
+    const pd = await api('/settings');
+    if(pd.success && pd.settings && pd.settings.role_permissions){
+      const saved = JSON.parse(pd.settings.role_permissions);
+      Object.keys(saved).forEach(role=>{ if(S.permissions[role]) Object.assign(S.permissions[role], saved[role]); });
+    }
+  } catch(e){}
   const r=ROLES[session.role];
   document.getElementById('sbRole').textContent=r.label;
   document.getElementById('sbRole').style.color=r.color;
