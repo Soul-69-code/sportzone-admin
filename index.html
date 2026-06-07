@@ -2468,7 +2468,7 @@ async function loadForceUpdateSettings(){
     const message=d.settings.force_update_message||'';
     el.innerHTML=`
       <div class="setting-row">
-        <div><div class="setting-label">Force Update Active</div><div class="setting-sub" style="color:${enabled?'#E03131':'var(--text3)'">${enabled?'⚠️ Users must update to continue':'Off — users can use any version'}</div></div>
+        <div><div class="setting-label">Force Update Active</div><div class="setting-sub" style="color:${enabled?'#E03131':'var(--text3)'}">${enabled?'⚠️ Users must update to continue':'Off — users can use any version'}</div></div>
         ${mkToggle(enabled,`toggleForceUpdate(${!enabled})`)}
       </div>
       <div class="f-row" style="margin-top:12px">
