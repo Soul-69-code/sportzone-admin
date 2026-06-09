@@ -357,6 +357,7 @@ tr:hover td{background:#0d1520;}
     <input type="file" id="pImgFiles" accept="image/*" multiple style="display:none" onchange="previewImages(this)"/>
     <div id="imgPreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
   </div>
+  <div class="f-row"><label class="f-label">Publish To</label><select class="f-select" id="pVisibility"><option value="both">📱 App + 🌐 Web</option><option value="app">📱 App Only</option><option value="web">🌐 Web Only</option></select></div>
   <button class="f-submit" onclick="addProduct()">Add Product</button>
 </div></div>
 
@@ -1405,6 +1406,7 @@ async function addProduct(){
     formData.append('category_id',document.getElementById('pCat')?document.getElementById('pCat').value||'':'');
     formData.append('gender',document.getElementById('pGender').value||'men');
     formData.append('weight_grams',document.getElementById('pWeight')?document.getElementById('pWeight').value||500:500);
+    formData.append('visibility',document.getElementById('pVisibility')?document.getElementById('pVisibility').value||'both':'both');
 
     const imgInput=document.getElementById('pImgFiles');
     if(imgInput&&imgInput.files&&imgInput.files.length>0){
@@ -1420,6 +1422,7 @@ async function addProduct(){
       closeModal('modal-product');
       ['pName','pPrice','pDisc','pStock','pSizes','pDesc','pWeight'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
       if(document.getElementById('pImgFiles'))document.getElementById('pImgFiles').value='';
+      const pv=document.getElementById('pVisibility');if(pv)pv.value='both';
       if(document.getElementById('imgPreview'))document.getElementById('imgPreview').innerHTML='';
       addAudit('Product "'+name+'" added');
       rProducts();toast('Product added to store!');
