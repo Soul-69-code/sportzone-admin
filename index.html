@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sanjay Collection · Admin</title>
+<title>Alven · Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -260,7 +260,7 @@ tr:hover td{background:#0d1520;}
   <div class="login-card">
     <div class="login-brand">
       <div class="login-brand-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-      <div><div class="login-brand-name">Sanjay Collection</div><div class="login-brand-sub">Control Panel</div></div>
+      <div><div class="login-brand-name">Alven</div><div class="login-brand-sub">Control Panel</div></div>
     </div>
     <div class="step-row">
       <div class="step-dot active" id="step1dot">1</div>
@@ -285,7 +285,7 @@ tr:hover td{background:#0d1520;}
       <button class="login-btn" id="btn2" onclick="submitKey2()">Access Dashboard</button>
       <div style="margin-top:12px;text-align:center"><span style="font-size:12px;color:var(--text3);cursor:pointer" onclick="resetLogin()">← Back</span></div>
     </div>
-    <div class="login-hint">Restricted access · Sanjay Collection Internal</div>
+    <div class="login-hint">Restricted access · Alven Internal</div>
   </div>
 </div>
 
@@ -295,7 +295,7 @@ tr:hover td{background:#0d1520;}
     <div class="sb-head">
       <div class="sb-brand">
         <div class="sb-brand-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-        <div><div class="sb-brand-name">Sanjay Collection</div><div class="sb-brand-role" id="sbRole">—</div></div>
+        <div><div class="sb-brand-name">Alven</div><div class="sb-brand-role" id="sbRole">—</div></div>
       </div>
     </div>
     <div class="sb-nav" id="sbNav"></div>
@@ -311,7 +311,7 @@ tr:hover td{background:#0d1520;}
     <div class="topbar">
       <div class="tb-left">
         <div class="page-title" id="pageTitle">Dashboard</div>
-        <div class="page-sub" id="pageSub">Sanjay Collection</div>
+        <div class="page-sub" id="pageSub">Alven</div>
       </div>
       <div class="tb-right">
         <div class="tb-chip"><div class="tb-dot"></div><span style="font-size:12px;font-weight:600;color:var(--text2)">Live</span><span class="tb-clock" id="clock">--:--</span></div>
@@ -720,7 +720,7 @@ let S={
   },
   cms:{
     // Store Info
-    storeName:'Sanjay Collection',
+    storeName:'Alven',
     storeAddress:'123 Main Street, Andheri West, Mumbai, Maharashtra 400053',
     storePhone:'+91 98765 43210',
     storeEmail:'support@sanjaycollection.com',
@@ -740,7 +740,7 @@ let S={
     emptyCartMsg:'Your cart is empty — start shopping!',
     freeDeliveryMsg:'Free delivery on orders above ₹999',
     codNotAvailableMsg:'Cash on Delivery is not available. Please pay via UPI, Card or Net Banking.',
-    loginWelcomeMsg:'Welcome to Sanjay Collection',
+    loginWelcomeMsg:'Welcome to Alven',
     loginSubMsg:'Login to continue shopping',
     outOfStockMsg:'This product is currently out of stock.',
     notifyMeConfirmMsg:'We will notify you when this product is back in stock!',
@@ -752,13 +752,13 @@ let S={
     popupMessage:'',
     // Force Update
     forceUpdate:false,
-    forceUpdateMsg:'A new version of Sanjay Collection is available. Please update to continue.',
+    forceUpdateMsg:'A new version of Alven is available. Please update to continue.',
     minAppVersion:'1.0.0',
     // Size Guide
     sizeGuideUrl:'',
   },
   settings:{
-    storeName:'Sanjay Collection',
+    storeName:'Alven',
     email:'support@sanjaycollection.com',
     phone:'+91 98765 43210',
     address:'Mumbai, Maharashtra',
@@ -930,7 +930,7 @@ const PT={dashboard:'Dashboard',analytics:'Analytics',finance:'Finance & Transac
 
 function renderPage(page){
   document.getElementById('pageTitle').textContent=PT[page]||page;
-  document.getElementById('pageSub').textContent='Sanjay Collection · '+ROLES[session.role]?.label;
+  document.getElementById('pageSub').textContent='Alven · '+ROLES[session.role]?.label;
   const R={dashboard:rDashboard,analytics:rAnalytics,finance:rFinance,reports:rReports,
     orders:rOrders,returns:rReturns,products:rProducts,reviews:rReviews,
     banners:rBanners,flashsale:rFlash,homepage:rHomepage,cms:rCMS,
@@ -1911,7 +1911,7 @@ function rCMS(){
       <div class="sec-title" style="margin-bottom:16px">Store Information (shown in "Our Store" screen)</div>
       <div class="two-col">
         ${[
-          ['Store Name','storeName','Sanjay Collection'],
+          ['Store Name','storeName','Alven'],
           ['Store Phone','storePhone','+91 98765 43210'],
           ['Store Email','storeEmail','support@sanjaycollection.com'],
           ['Store Instagram','storeInstagram','@sanjaycollection'],
