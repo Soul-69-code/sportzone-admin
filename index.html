@@ -1016,8 +1016,14 @@ async function rDashboard(){
     </tbody></table></div>
   `;
   setTimeout(()=>{
-    drawBar('rc',['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],[0,0,0,0,0,0,Math.max(totalRevenue,0)],COLORS.accent);
-    drawBar('oc',['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],[0,0,0,0,0,0,totalOrders],COLORS.purple);
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const last7=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return d.toISOString().split('T')[0];});
+    const weekly=statsD.weekly||[];
+    const revData=last7.map(d=>{const r=weekly.find(w=>w.day&&w.day.startsWith(d));return r?+r.revenue:0;});
+    const ordData=last7.map(d=>{const r=weekly.find(w=>w.day&&w.day.startsWith(d));return r?+r.orders:0;});
+    const labels=last7.map(d=>days[new Date(d).getDay()]);
+    drawBar('rc',labels,revData,COLORS.accent);
+    drawBar('oc',labels,ordData,COLORS.purple);
   },50);
 }
 
