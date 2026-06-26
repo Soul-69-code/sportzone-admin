@@ -1606,7 +1606,7 @@ async function saveBanner(){
   if(bannerImg&&bannerImg.files&&bannerImg.files[0]){
     formData.append('image',bannerImg.files[0]);
   }
-  const d=await api('/banners','POST',formData,true);
+  const d=await api('/admin/banners','POST',formData,true);
   if(d.success||d.banner){
     toast('Banner created!');closeModal('modal-banner');rBanners();
   } else toast(d.message||'Failed','error');
@@ -1614,7 +1614,7 @@ async function saveBanner(){
 
 async function delBannerReal(id){
   if(!confirm('Delete this banner?'))return;
-  await api('/banners/'+id,'DELETE');
+  await api('/admin/banners/'+id,'DELETE');
   toast('Banner deleted','warn');rBanners();
 }
 function delBanner(id){
