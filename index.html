@@ -1463,17 +1463,15 @@ async function addProduct(){
       }
     }
 
-    // Append colour variants if enabled
+    // Append colour variant metadata (images uploaded separately after product is created)
+    let pendingVariantImages=[];
     const variantSection=document.getElementById('variantSection');
     if(variantSection&&variantSection.style.display!=='none'){
       const variants=getVariantRows();
       if(variants.length>0){
         const variantMeta=variants.map(v=>({color:v.color,color_hex:v.color_hex,stock:v.stock,extra_price:v.extra_price}));
         formData.append('variants',JSON.stringify(variantMeta));
-        // Append variant images
-        variants.forEach((v,i)=>{
-          if(v.imgFile) formData.append('images',v.imgFile);
-        });
+        pendingVariantImages=variants.map(v=>v.imgFile);
       }
     }
 
@@ -1481,6 +1479,18 @@ async function addProduct(){
     console.log('addProduct response:',d);
 
     if(d.success||d.product){
+      if(pendingVariantImages.length>0 && d.color_variants){
+        for(let i=0;i<pendingVariantImages.length;i++){
+          const file=pendingVariantImages[i];
+          const vrow=d.color_variants[i];
+          if(file&&vrow&&vrow.id){
+            const vfd=new FormData();
+            vfd.append('image',file);
+            try{ await api(`/products/variants/${vrow.id}/image`,'POST',vfd,true); }
+            catch(e){ console.error('Variant image upload failed:',e); }
+          }
+        }
+      }
       closeModal('modal-product');
       ['pName','pPrice','pDisc','pStock','pSizes','pDesc','pWeight'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
       const vs=document.getElementById('variantSection');if(vs)vs.style.display='none';
