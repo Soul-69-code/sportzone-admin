@@ -358,6 +358,24 @@ tr:hover td{background:#0d1520;}
     <div id="imgPreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
   </div>
   <div class="f-row"><label class="f-label">Publish To</label><select class="f-select" id="pVisibility"><option value="both">📱 App + 🌐 Web</option><option value="app">📱 App Only</option><option value="web">🌐 Web Only</option></select></div>
+  <div class="f-row" style="margin-top:4px">
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:12px 16px;cursor:pointer" onclick="toggleVariants()">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text1)">Has colour variants?</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Same product in different colours</div>
+      </div>
+      <div id="variantToggle" style="width:44px;height:24px;background:var(--border2);border-radius:12px;position:relative;transition:background 0.2s">
+        <div id="variantDot" style="width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3)"></div>
+      </div>
+    </div>
+  </div>
+  <div id="variantSection" style="display:none;margin-top:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <label class="f-label" style="margin:0">Colour Variants</label>
+      <button onclick="addVariantRow()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">+ Add Colour</button>
+    </div>
+    <div id="variantRows" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
   <button class="f-submit" onclick="addProduct()">Add Product</button>
 </div></div>
 
@@ -1445,12 +1463,30 @@ async function addProduct(){
       }
     }
 
+    // Append colour variants if enabled
+    const variantSection=document.getElementById('variantSection');
+    if(variantSection&&variantSection.style.display!=='none'){
+      const variants=getVariantRows();
+      if(variants.length>0){
+        const variantMeta=variants.map(v=>({color:v.color,color_hex:v.color_hex,stock:v.stock,extra_price:v.extra_price}));
+        formData.append('variants',JSON.stringify(variantMeta));
+        // Append variant images
+        variants.forEach((v,i)=>{
+          if(v.imgFile) formData.append('images',v.imgFile);
+        });
+      }
+    }
+
     const d=await api('/products','POST',formData,true);
     console.log('addProduct response:',d);
 
     if(d.success||d.product){
       closeModal('modal-product');
       ['pName','pPrice','pDisc','pStock','pSizes','pDesc','pWeight'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+      const vs=document.getElementById('variantSection');if(vs)vs.style.display='none';
+      const vt=document.getElementById('variantToggle');if(vt)vt.style.background='var(--border2)';
+      const vd=document.getElementById('variantDot');if(vd)vd.style.transform='translateX(0)';
+      const vr=document.getElementById('variantRows');if(vr)vr.innerHTML='';
       if(document.getElementById('pImgFiles'))document.getElementById('pImgFiles').value='';
       const pv=document.getElementById('pVisibility');if(pv)pv.value='both';
       if(document.getElementById('imgPreview'))document.getElementById('imgPreview').innerHTML='';
@@ -2545,6 +2581,57 @@ async function saveForceUpdate(){
 }
 
 function toggleSetting(k){S.settings[k]=!S.settings[k];addAudit(`Setting "${k}" ${S.settings[k]?'on':'off'}`);toast(k==='maintenanceMode'?(S.settings[k]?'Maintenance mode ON':'App is live again'):'Updated');rSettings();}
+
+function toggleVariants() {
+  const section = document.getElementById('variantSection');
+  const toggle = document.getElementById('variantToggle');
+  const dot = document.getElementById('variantDot');
+  const isOpen = section.style.display !== 'none';
+  section.style.display = isOpen ? 'none' : 'block';
+  toggle.style.background = isOpen ? 'var(--border2)' : 'var(--accent)';
+  dot.style.transform = isOpen ? 'translateX(0)' : 'translateX(20px)';
+  if (!isOpen && document.getElementById('variantRows').children.length === 0) addVariantRow();
+}
+
+function addVariantRow() {
+  const id = Date.now();
+  const row = document.createElement('div');
+  row.id = 'vrow_' + id;
+  row.style.cssText = 'background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px';
+  row.innerHTML = `
+    <div style="display:flex;gap:8px;align-items:center">
+      <input class="f-input" placeholder="Colour name (e.g. Red)" id="vc_name_${id}" style="flex:1;margin:0"/>
+      <input type="color" id="vc_hex_${id}" value="#FF0000" style="width:44px;height:44px;border:none;border-radius:10px;cursor:pointer;padding:2px;background:var(--surface2)"/>
+      <button onclick="document.getElementById('vrow_${id}').remove()" style="background:none;border:1px solid #ff6b6b44;color:#ff6b6b;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:14px">✕</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Stock</div>
+      <input class="f-input" type="number" placeholder="0" id="vc_stock_${id}" style="margin:0"/></div>
+      <div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Extra Price (₹)</div>
+      <input class="f-input" type="number" placeholder="0" id="vc_price_${id}" style="margin:0"/></div>
+    </div>
+    <div><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Colour Image</div>
+    <input type="file" id="vc_img_${id}" accept="image/*" class="f-input" style="margin:0"/></div>
+  `;
+  document.getElementById('variantRows').appendChild(row);
+}
+
+function getVariantRows() {
+  const rows = document.getElementById('variantRows').children;
+  const variants = [];
+  for (const row of rows) {
+    const id = row.id.replace('vrow_', '');
+    variants.push({
+      color: document.getElementById('vc_name_' + id)?.value?.trim() || '',
+      color_hex: document.getElementById('vc_hex_' + id)?.value || '',
+      stock: parseInt(document.getElementById('vc_stock_' + id)?.value) || 0,
+      extra_price: parseFloat(document.getElementById('vc_price_' + id)?.value) || 0,
+      imgFile: document.getElementById('vc_img_' + id)?.files?.[0] || null
+    });
+  }
+  return variants.filter(v => v.color);
+}
+
 </script>
 </body>
 </html>
